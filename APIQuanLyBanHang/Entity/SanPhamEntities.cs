@@ -3,7 +3,8 @@
     public class SanPhamEntities
     {
         public Guid IdSanPham { get; set; }
-        public string? LoaiSanPham { get; set; }
+        public Guid IdHinhAnh { get; set; }
+        public string? TenSanPham { get; set; }
         public decimal? GiaBan { get; set; }
         public decimal? GiaVon { get; set; }
         public string? DonVi { get; set; }

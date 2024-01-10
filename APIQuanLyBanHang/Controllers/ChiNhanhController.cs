@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APIQuanLyBanHang.Model;
-using APIQuanLyBanHang.Data;
+
 
 namespace APIQuanLyBanHang.Controllers
 {

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace APIQuanLyBanHang.Entity
+﻿namespace APIQuanLyBanHang.Data
 {
-    public class TaiKhoanEntities 
+    public class Account
     {
         public string? Email { get; set; }
         public string? TenNguoiDung { get; set; }

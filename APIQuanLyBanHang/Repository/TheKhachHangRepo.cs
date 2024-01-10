@@ -1,4 +1,4 @@
-﻿using APIQuanLyBanHang.Data;
+﻿
 using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;

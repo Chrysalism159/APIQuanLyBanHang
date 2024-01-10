@@ -9,6 +9,8 @@ namespace APIQuanLyBanHang.HandleMapping
         public MapProfile() {
             CreateMap<TheThanhVien, TheKhachHangEntities>();
             CreateMap<LoaiThe, LoaiTheEntities>();
+            CreateMap<SanPham, SanPhamEntities>();
+            CreateMap<Anh, AnhEntities>();
         }
 
     }

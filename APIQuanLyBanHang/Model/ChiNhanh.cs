@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace APIQuanLyBanHang.Model;
 
 public partial class ChiNhanh
 {
-    [Key]
     public string IdchiNhanh { get; set; } = null!;
 
     public string? TenChiNhanh { get; set; }
