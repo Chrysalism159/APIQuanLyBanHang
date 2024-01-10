@@ -1,4 +1,4 @@
-using APIQuanLyBanHang.Data;
+
 using APIQuanLyBanHang.HandleMapping;
 using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Repository;
@@ -11,7 +11,7 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 //Conection string
-builder.Services.AddDbContext<QlbdaTtsContext>(options =>
+builder.Services.AddDbContext<APIQuanLyBanHang.Model.QlbdaTtsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConectionString") ?? throw new InvalidOperationException("Connection string 'ConectionString' not found.")));
 
 // Add services to the container.
@@ -31,6 +31,7 @@ builder.Services.AddTransient<IPhieuNhapHangRepo, PhieuNhapHangRepo>();
 builder.Services.AddTransient<INhanVienRepo, NhanVienRepo>();
 builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
 builder.Services.AddTransient<ILoaiTheRepo, LoaiTheRepo>();
+builder.Services.AddTransient<IAnhRepo, AnhRepo>();
 
 //add mapper
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapProfile()));
