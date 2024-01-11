@@ -25,7 +25,7 @@ public partial class TheThanhVien
 
     public bool? GioiTinh { get; set; }
 
-    public string? ĐiaChi { get; set; }
+    public string? DiaChi { get; set; }
 
     public DateTime? NgaySinh { get; set; }
 

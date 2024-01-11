@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using APIQuanLyBanHang.Helper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
+public partial class QlbdaTtsContext : DbContext
 {
     public QlbdaTtsContext()
     {
@@ -36,32 +33,32 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
 
     public virtual DbSet<PhieuNhapHang> PhieuNhapHangs { get; set; }
 
-    public virtual DbSet<SanPham> SanPhams { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<SanPhamChiNhanh> SanPhamChiNhanhs { get; set; }
+    public virtual DbSet<RoleClaim> RoleClaims { get; set; }
+
+    public virtual DbSet<SanPham> SanPhams { get; set; }
 
     public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
 
     public virtual DbSet<TheThanhVien> TheThanhViens { get; set; }
 
+    public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserClaim> UserClaims { get; set; }
+
+    public virtual DbSet<UserLogin> UserLogins { get; set; }
+
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
+    public virtual DbSet<UserToken> UserTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=CHRYSALISM\\SQLEXPRESS;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
-        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
-        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);
@@ -88,9 +85,9 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IDChiNhanh");
+            entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.GhiChu).HasMaxLength(50);
             entity.Property(e => e.TenChiNhanh).HasMaxLength(50);
-            entity.Property(e => e.DiaChi).HasMaxLength(50);
         });
 
         modelBuilder.Entity<ChiTietHoaDon>(entity =>
@@ -364,31 +361,6 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasConstraintName("FK_SanPham_Anh");
         });
 
-        modelBuilder.Entity<SanPhamChiNhanh>(entity =>
-        {
-            entity.HasKey(e => new { e.IdsanPham, e.IdchiNhanh });
-
-            entity.ToTable("SanPhamChiNhanh");
-
-            entity.Property(e => e.IdsanPham)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDSanPham");
-            entity.Property(e => e.IdchiNhanh)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDChiNhanh");
-            entity.Property(e => e.GhiChu).HasMaxLength(50);
-
-            entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.SanPhamChiNhanhs)
-                .HasForeignKey(d => d.IdchiNhanh)
-                .HasConstraintName("FK_SanPhamChiNhanh_ChiNhanh");
-
-            entity.HasOne(d => d.IdsanPhamNavigation).WithMany(p => p.SanPhamChiNhanhs)
-                .HasForeignKey(d => d.IdsanPham)
-                .HasConstraintName("FK_SanPhamChiNhanh_SanPham");
-        });
-
         modelBuilder.Entity<TaiKhoan>(entity =>
         {
             entity.HasKey(e => e.IdtaiKhoan);
@@ -415,6 +387,7 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IDTheThanhVien");
+            entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.GhiChu).HasMaxLength(50);
             entity.Property(e => e.IdloaiThe)
@@ -429,11 +402,25 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
             entity.Property(e => e.SoTienDaSuDung).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.SoTienDaTichLuy).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TenKhachHang).HasMaxLength(50);
-            entity.Property(e => e.ĐiaChi).HasMaxLength(50);
 
             entity.HasOne(d => d.IdloaiTheNavigation).WithMany(p => p.TheThanhViens)
                 .HasForeignKey(d => d.IdloaiThe)
                 .HasConstraintName("FK_TheThanhVien_LoaiThe");
+        });
+
+        modelBuilder.Entity<UserLogin>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+        modelBuilder.Entity<UserToken>(entity =>
+        {
+            entity.HasNoKey();
         });
 
         OnModelCreatingPartial(modelBuilder);

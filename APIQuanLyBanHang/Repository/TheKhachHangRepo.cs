@@ -19,7 +19,7 @@ namespace APIQuanLyBanHang.Repository
             this._map = map;
         }
 
-        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheKhachHangEntities kh)
+        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheThanhVienEntities kh)
         {
             try
             {
@@ -50,17 +50,17 @@ namespace APIQuanLyBanHang.Repository
             }
         }
 
-        public async Task<ActionResult<List<TheKhachHangEntities>>> DanhSach()
+        public async Task<ActionResult<List<TheThanhVienEntities>>> DanhSach()
         {
             List<TheThanhVien> ds = await _context.TheThanhViens.ToListAsync();
             if(ds != null && ds.Count > 0)
             {
-                return this._map.Map<List<TheThanhVien>, List<TheKhachHangEntities>>(ds);
+                return this._map.Map<List<TheThanhVien>, List<TheThanhVienEntities>>(ds);
             }
-            return new List<TheKhachHangEntities>();
+            return new List<TheThanhVienEntities>();
         }
 
-        public async Task<ActionResult<TrangThai>> ThemThongTin(TheKhachHangEntities kh)
+        public async Task<ActionResult<TrangThai>> ThemThongTin(TheThanhVienEntities kh)
         {
             kh.IdtheThanhVien = Guid.NewGuid();
             try
@@ -96,24 +96,24 @@ namespace APIQuanLyBanHang.Repository
             return new TrangThai() { MaTrangThai = 0, ThongBao = "Them that bai" };
         }
 
-        public async Task<ActionResult<TheKhachHangEntities>> TimTheoID(Guid id)
+        public async Task<ActionResult<TheThanhVienEntities>> TimTheoID(Guid id)
         {
             TheThanhVien ds = await _context.TheThanhViens.FindAsync(id.ToString());
             if (ds != null)
             {
-                return this._map.Map<TheThanhVien, TheKhachHangEntities>(ds);
+                return this._map.Map<TheThanhVien, TheThanhVienEntities>(ds);
             }
-            return new TheKhachHangEntities();
+            return new TheThanhVienEntities();
         }
 
-        public async Task<ActionResult<List<TheKhachHangEntities>>> TimTheoTen(string name)
+        public async Task<ActionResult<List<TheThanhVienEntities>>> TimTheoTen(string name)
         {
             List<TheThanhVien> ds = await _context.TheThanhViens.Where( m=>m.TenKhachHang.Contains(name)).ToListAsync();
             if (ds != null && ds.Count > 0)
             {
-                return this._map.Map<List<TheThanhVien>, List<TheKhachHangEntities>>(ds);
+                return this._map.Map<List<TheThanhVien>, List<TheThanhVienEntities>>(ds);
             }
-            return new List<TheKhachHangEntities>();
+            return new List<TheThanhVienEntities>();
         }
 
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id) 
