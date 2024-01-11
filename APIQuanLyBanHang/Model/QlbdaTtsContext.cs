@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using APIQuanLyBanHang.Helper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : DbContext
+public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
 {
     public QlbdaTtsContext()
     {
@@ -45,6 +48,18 @@ public partial class QlbdaTtsContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);

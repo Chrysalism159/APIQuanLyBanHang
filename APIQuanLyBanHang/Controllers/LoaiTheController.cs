@@ -1,5 +1,6 @@
 ﻿using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.InterfaceRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,11 +17,13 @@ namespace APIQuanLyBanHang.Controllers
             this._context = _context;
         }
         [HttpGet]
+        [Authorize(Roles ="NhanVien")]
         public async Task<ActionResult<List<LoaiTheEntities>>> DanhSach()
         {
             return await _context.DanhSach();
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "QuanLy")]
         public async Task<ActionResult<LoaiTheEntities>> TimTheoID(Guid id)
         {
             return await _context.TimTheoID(id);

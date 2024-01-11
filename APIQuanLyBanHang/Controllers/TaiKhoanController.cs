@@ -16,24 +16,26 @@ namespace APIQuanLyBanHang.Controllers
         }
 
         [HttpPost("SignUpAsync")]
-        public async Task<IActionResult> SignUpAsync(QuanLyThongTinTaiKhoan signup)
+        public async Task<IActionResult> SignInAsync(QuanLyThongTinTaiKhoan model)
         {
-            var result = await account.SignUpAsync(signup);
-            if (result.Succeeded)
-            {
-                return Ok(result.Succeeded);
-            }
-            return Unauthorized();
-        }
-        [HttpPost("SignInAsync")]
-        public async Task<IActionResult> SignInAsync(QuanLyThongTinTaiKhoan signin)
-        {
-            var result = await account.SignInAsync(signin);
+            var result = await account.SignInAsync(model);
             if (string.IsNullOrEmpty(result))
             {
                 return Unauthorized();
             }
             return Ok(result);
+        }
+
+        [HttpPost("SignInAsync")]
+        public async Task<IActionResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
+        {
+            var result = await account.SignUpAsync(model);
+            if (result.Succeeded)
+            {
+                return Ok(result.Succeeded);
+            }
+            return Unauthorized();
+            
         }
     }
 }
