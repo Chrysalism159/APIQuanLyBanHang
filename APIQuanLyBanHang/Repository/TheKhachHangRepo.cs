@@ -37,7 +37,7 @@ namespace APIQuanLyBanHang.Repository
                         tt.SoTienDaTichLuy = kh.SoTienDaTichLuy;
                         tt.SoTienDaSuDung = kh.SoTienDaSuDung;
                         tt.GioiTinh = kh.GioiTinh;
-                        tt.ĐiaChi = kh.ĐiaChi;
+                        tt.DiaChi = kh.DiaChi;
                         tt.NgaySinh = kh.NgaySinh;
                         tt.GhiChu = kh.GhiChu;
                     }
@@ -78,10 +78,10 @@ namespace APIQuanLyBanHang.Repository
                             Email = kh.Email,
                             SoDiemTichLuy = kh.SoDiemTichLuy,
                             SoDiemDaSuDung = kh.SoDiemDaSuDung,
-                            SoTienDaTichLuy = kh.SoTienDaTichLuy,
+                            SoTienDaTichLuy = kh.SoTienDaSuDung,
                             SoTienDaSuDung = kh.SoTienDaSuDung,
                             GioiTinh = kh.GioiTinh,
-                            ĐiaChi = kh.ĐiaChi,
+                            DiaChi = kh.DiaChi,
                             NgaySinh = kh.NgaySinh,
                             GhiChu = kh.GhiChu
                         };
