@@ -5,7 +5,6 @@ namespace APIQuanLyBanHang.Model;
 
 public partial class Anh
 {
-    
     public string Idanh { get; set; } = null!;
 
     public string? FileAnh { get; set; }

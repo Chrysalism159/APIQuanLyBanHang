@@ -28,18 +28,18 @@ namespace APIQuanLyBanHang.Repository
                     TheThanhVien tt = await _context.FindAsync<TheThanhVien>(id.ToString());
                     if(tt !=  null)
                     {
-                        tt.IdloaiThe = kh.IdLoaiThe.ToString();
+                        tt.IdloaiThe = kh.IdloaiThe.ToString();
                         tt.TenKhachHang = kh.TenKhachHang;
-                        tt.Sdt = kh.SoDienThoai;
+                        tt.Sdt = kh.Sdt;
                         tt.Email = kh.Email;
                         tt.SoDiemTichLuy = kh.SoDiemTichLuy;
                         tt.SoDiemDaSuDung = kh.SoDiemDaSuDung;
-                        tt.SoTienDaTichLuy = kh.SoTienTichLuy;
+                        tt.SoTienDaTichLuy = kh.SoTienDaTichLuy;
                         tt.SoTienDaSuDung = kh.SoTienDaSuDung;
                         tt.GioiTinh = kh.GioiTinh;
-                        tt.ĐiaChi = kh.DiaChi;
-                        tt.NgaySinh = kh.NgayThangNamSinh;
-                        tt.GhiChu = kh.GhiChuKhachHang;
+                        tt.DiaChi = kh.DiaChi;
+                        tt.NgaySinh = kh.NgaySinh;
+                        tt.GhiChu = kh.GhiChu;
                     }
                     await _context.SaveChangesAsync();
                     await dbtran.CommitAsync();
@@ -62,7 +62,7 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(TheKhachHangEntities kh)
         {
-            kh.IdTheThanhVien = Guid.NewGuid();
+            kh.IdtheThanhVien = Guid.NewGuid();
             try
             {
                 using(var dbtran = await this._context.Database.BeginTransactionAsync())
@@ -71,19 +71,19 @@ namespace APIQuanLyBanHang.Repository
                     {
                         TheThanhVien tt = new TheThanhVien()
                         {
-                            IdtheThanhVien = kh.IdTheThanhVien.ToString(),
-                            IdloaiThe = kh.IdLoaiThe.ToString(),
+                            IdtheThanhVien = kh.IdtheThanhVien.ToString(),
+                            IdloaiThe = kh.IdloaiThe.ToString(),
                             TenKhachHang = kh.TenKhachHang,
-                            Sdt = kh.SoDienThoai,
+                            Sdt = kh.Sdt,
                             Email = kh.Email,
                             SoDiemTichLuy = kh.SoDiemTichLuy,
                             SoDiemDaSuDung = kh.SoDiemDaSuDung,
-                            SoTienDaTichLuy = kh.SoTienTichLuy,
+                            SoTienDaTichLuy = kh.SoTienDaSuDung,
                             SoTienDaSuDung = kh.SoTienDaSuDung,
                             GioiTinh = kh.GioiTinh,
-                            ĐiaChi = kh.DiaChi,
-                            NgaySinh = kh.NgayThangNamSinh,
-                            GhiChu = kh.GhiChuKhachHang
+                            DiaChi = kh.DiaChi,
+                            NgaySinh = kh.NgaySinh,
+                            GhiChu = kh.GhiChu
                         };
                         _context.Add(tt);
                         await _context.SaveChangesAsync();

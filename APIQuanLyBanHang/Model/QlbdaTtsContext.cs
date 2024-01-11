@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using APIQuanLyBanHang.Helper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
+public partial class QlbdaTtsContext : DbContext
 {
     public QlbdaTtsContext()
     {
@@ -36,30 +33,32 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
 
     public virtual DbSet<PhieuNhapHang> PhieuNhapHangs { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<RoleClaim> RoleClaims { get; set; }
+
     public virtual DbSet<SanPham> SanPhams { get; set; }
 
     public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
 
     public virtual DbSet<TheThanhVien> TheThanhViens { get; set; }
 
+    public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserClaim> UserClaims { get; set; }
+
+    public virtual DbSet<UserLogin> UserLogins { get; set; }
+
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
+    public virtual DbSet<UserToken> UserTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=Chrysalism\\SQLEXPRESS;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=CHRYSALISM\\SQLEXPRESS;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
-        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
-        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);
@@ -407,6 +406,21 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
             entity.HasOne(d => d.IdloaiTheNavigation).WithMany(p => p.TheThanhViens)
                 .HasForeignKey(d => d.IdloaiThe)
                 .HasConstraintName("FK_TheThanhVien_LoaiThe");
+        });
+
+        modelBuilder.Entity<UserLogin>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+        modelBuilder.Entity<UserToken>(entity =>
+        {
+            entity.HasNoKey();
         });
 
         OnModelCreatingPartial(modelBuilder);
