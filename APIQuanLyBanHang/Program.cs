@@ -76,9 +76,11 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddTransient<ITheKhachHangRepo, TheKhachHangRepo>();
 builder.Services.AddTransient<ISanPhamRepo, SanPhamRepo>();
 builder.Services.AddTransient<IHoaDonRepo, HoaDonRepo>();
+builder.Services.AddTransient<INhaCungCapRepo, NhaCungCapRepo>();
 builder.Services.AddTransient<IPhieuNhapHangRepo, PhieuNhapHangRepo>();
 builder.Services.AddTransient<INhanVienRepo, NhanVienRepo>();
 builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
+builder.Services.AddTransient<IChiNhanhRepo, ChiNhanhRepo>();
 builder.Services.AddTransient<ILoaiTheRepo, LoaiTheRepo>();
 builder.Services.AddTransient<IAnhRepo, AnhRepo>();
 builder.Services.AddTransient<ITaiKhoanRepo, TaiKhoanRepo>();

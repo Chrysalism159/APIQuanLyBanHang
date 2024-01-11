@@ -33,10 +33,10 @@ namespace APIQuanLyBanHang.Repository
                             var result = _repo.TaiHinhAnh(kh.file);
                             if (result.Item1 == 1)
                             {
-                                kh.TenFileAnh = result.Item2;
+                                kh.FileAnh = result.Item2;
                             }
                             img.Idanh = kh.Idanh.ToString();
-                            img.FileAnh = kh.TenFileAnh;
+                            img.FileAnh = kh.FileAnh;
                             img.GhiChu = kh.GhiChu;
                         }
                         await this._context.SaveChangesAsync();
@@ -52,10 +52,17 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<List<AnhEntities>>> DanhSach()
         {
-            List<Anh> ds = await _context.Anhs.ToListAsync();
-            if (ds != null && ds.Count > 0)
+            try
             {
-                return this._map.Map<List<Anh>, List<AnhEntities>>(ds);
+                List<Anh> ds = await _context.Anhs.ToListAsync();
+                if (ds != null && ds.Count > 0)
+                {
+                    return this._map.Map<List<Anh>, List<AnhEntities>>(ds);
+                }
+            }
+            catch
+            {
+
             }
             return new List<AnhEntities>();
 
@@ -75,14 +82,14 @@ namespace APIQuanLyBanHang.Repository
                             var result = _repo.TaiHinhAnh(kh.file);
                             if(result.Item1 == 1)
                             {
-                                kh.TenFileAnh = result.Item2;
+                                kh.FileAnh = result.Item2;
                             }
 
                         }
                         Anh img = new Anh()
                         {
                             Idanh = kh.Idanh.ToString(),
-                            FileAnh = kh.TenFileAnh,
+                            FileAnh = kh.FileAnh,
                             GhiChu = kh.GhiChu
                         };
                         await this._context.AddAsync(img);

@@ -15,6 +15,7 @@ namespace APIQuanLyBanHang.HandleMapping
             CreateMap<NhaCungCap,NhaCungCapEntities>();
             CreateMap<PhieuChiTieu,PhieuChiTieuEntities>();
 
+            CreateMap<Anh,AnhEntities>();
             CreateMap<SanPham, SanPhamEntities>();
             CreateMap<HoaDon, HoaDonEntities>();
             CreateMap<ChiTietHoaDon, ChiTietHoaDonEntities>();
