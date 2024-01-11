@@ -1,13 +1,16 @@
 ﻿namespace APIQuanLyBanHang.Entity
 {
     public class ChiTietHoaDonEntities
-    {
+    {        
+        public Guid IdchiTietHoaDon { get; set; } 
 
         public Guid? IdhoaDon { get; set; }
 
         public Guid? IdsanPham { get; set; }
 
         public Guid? IdphieuNhapHang { get; set; }
+
+        public Guid IdPhieuChi { get; set; }
 
         public decimal? ChietKhau { get; set; }
 

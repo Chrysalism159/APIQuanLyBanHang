@@ -81,8 +81,8 @@ builder.Services.AddTransient<INhanVienRepo, NhanVienRepo>();
 builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
 builder.Services.AddTransient<ILoaiTheRepo, LoaiTheRepo>();
 builder.Services.AddTransient<IAnhRepo, AnhRepo>();
-builder.Services.AddTransient<ITaiKhoanRepository, TaiKhoanRepository>();
-
+builder.Services.AddTransient<ITaiKhoanRepo, TaiKhoanRepo>();
+builder.Services.AddTransient<IPhieuChiTieuRepo, PhieuChiTieuRepo>();
 //add mapper
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapProfile()));
 IMapper map = automapper.CreateMapper();

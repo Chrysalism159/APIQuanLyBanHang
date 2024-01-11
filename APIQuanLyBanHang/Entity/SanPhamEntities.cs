@@ -2,9 +2,9 @@
 {
     public class SanPhamEntities
     {
-        public Guid IdsanPham { get; set; }
+        public Guid IdsanPham { get; set; } 
 
-        public Guid? Idanh { get; set; }
+        public string? Idanh { get; set; }
 
         public string? TenSanPham { get; set; }
 

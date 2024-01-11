@@ -2,7 +2,7 @@
 {
     public class LoaiTheEntities
     {
-        public Guid IdloaiThe { get; set; }
+        public Guid IdloaiThe { get; set; } 
 
         public string? TenLoaiThe { get; set; }
 

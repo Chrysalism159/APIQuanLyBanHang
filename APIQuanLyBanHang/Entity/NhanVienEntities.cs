@@ -3,7 +3,7 @@
     public class NhanVienEntities
     {
 
-        public Guid IdnhanVien { get; set; }
+        public Guid IdnhanVien { get; set; } 
 
         public Guid? IdchiNhanh { get; set; }
 

@@ -2,7 +2,7 @@
 {
     public class NhaCungCapEntities
     {
-        public Guid IdnhaCungCap { get; set; }
+        public Guid IdnhaCungCap { get; set; } 
 
         public string? TenNhaCungCap { get; set; }
 
