@@ -1,48 +1,39 @@
-﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
+﻿using APIQuanLyBanHang.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]/{action}")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TaiKhoanController : ControllerBase
     {
-        private readonly ITaiKhoanRepo repository;
-        public TaiKhoanController (ITaiKhoanRepo repository)
+        private readonly ITaiKhoanRepository account;
+
+        public TaiKhoanController(ITaiKhoanRepository acc)
         {
-            this.repository = repository;
+            this.account = acc;
         }
-        [HttpGet]
-        public async Task<ActionResult<List<TaiKhoanEntities>>> DanhSach()
+
+        [HttpPost("SignUpAsync")]
+        public async Task<IActionResult> SignUpAsync(QuanLyThongTinTaiKhoan signup)
         {
-            return await repository.DanhSach();
+            var result = await account.SignUpAsync(signup);
+            if (result.Succeeded)
+            {
+                return Ok(result.Succeeded);
+            }
+            return Unauthorized();
         }
-        [HttpPost]
-        public async Task<ActionResult<TrangThai>>ThemThongTin(TaiKhoanEntities tk)
+        [HttpPost("SignInAsync")]
+        public async Task<IActionResult> SignInAsync(QuanLyThongTinTaiKhoan signin)
         {
-            return await repository.ThemThongTin(tk);
-        }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TaiKhoanEntities>>TimTheoID(Guid id)
-        {
-            return await repository.TimTheoID(id);
-        }
-        [HttpGet("{name}")]
-        public async Task<ActionResult<List<TaiKhoanEntities>>>TimTheoTen(string name)
-        {
-            return await repository.TimTheoTen(name);
-        }
-        [HttpPut]
-        public async Task<ActionResult<TrangThai>>SuaThongTin(Guid id,TaiKhoanEntities tk)
-        {
-            return await repository.CapNhatThongTin(id, tk);
-        }
-        [HttpDelete]
-        public async Task<ActionResult<TrangThai>>XoaThongTin(Guid id)
-        {
-            return await repository.XoaThongTin(id);
+            var result = await account.SignInAsync(signin);
+            if (string.IsNullOrEmpty(result))
+            {
+                return Unauthorized();
+            }
+            return Ok(result);
         }
     }
 }
