@@ -1,8 +1,7 @@
 ﻿namespace APIQuanLyBanHang.Entity
 {
     public class ChiTietHoaDonEntities
-    {
-        
+    {        
         public Guid IdchiTietHoaDon { get; set; } 
 
         public Guid? IdhoaDon { get; set; }

@@ -27,7 +27,7 @@ namespace APIQuanLyBanHang.Repository
                     if(chinhanhcu!=null)
                     {
                         chinhanhcu.TenChiNhanh = cn.TenChiNhanh;
-                        chinhanhcu.ĐiaChi = cn.ĐiaChi;
+                        chinhanhcu.DiaChi = cn.DiaChi;
                         chinhanhcu.GhiChu = cn.GhiChu;
 
                         await context.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace APIQuanLyBanHang.Repository
                         {
                             IdchiNhanh = cn.IdchiNhanh.ToString(),
                             TenChiNhanh = cn.TenChiNhanh,
-                            ĐiaChi = cn.ĐiaChi,
+                            DiaChi = cn.DiaChi,
                             GhiChu = cn.GhiChu,
                         };
                         await context.ChiNhanhs.AddAsync(chiNhanh);

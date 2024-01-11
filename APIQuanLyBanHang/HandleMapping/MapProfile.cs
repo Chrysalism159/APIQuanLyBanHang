@@ -14,6 +14,12 @@ namespace APIQuanLyBanHang.HandleMapping
             CreateMap<TaiKhoan, TaiKhoanEntities>();
             CreateMap<NhaCungCap,NhaCungCapEntities>();
             CreateMap<PhieuChiTieu,PhieuChiTieuEntities>();
+
+            CreateMap<SanPham, SanPhamEntities>();
+            CreateMap<HoaDon, HoaDonEntities>();
+            CreateMap<ChiTietHoaDon, ChiTietHoaDonEntities>();
+            CreateMap<PhieuNhapHang, PhieuNhapHangEntities>();
+
         }
 
     }
