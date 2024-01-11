@@ -33,10 +33,10 @@ namespace APIQuanLyBanHang.Repository
                             var result = _repo.TaiHinhAnh(kh.file);
                             if (result.Item1 == 1)
                             {
-                                kh.TenFileAnh = result.Item2;
+                                kh.FileAnh = result.Item2;
                             }
                             img.Idanh = kh.Idanh.ToString();
-                            img.FileAnh = kh.TenFileAnh;
+                            img.FileAnh = kh.FileAnh;
                             img.GhiChu = kh.GhiChu;
                         }
                         await this._context.SaveChangesAsync();
@@ -75,14 +75,14 @@ namespace APIQuanLyBanHang.Repository
                             var result = _repo.TaiHinhAnh(kh.file);
                             if(result.Item1 == 1)
                             {
-                                kh.TenFileAnh = result.Item2;
+                                kh.FileAnh = result.Item2;
                             }
 
                         }
                         Anh img = new Anh()
                         {
                             Idanh = kh.Idanh.ToString(),
-                            FileAnh = kh.TenFileAnh,
+                            FileAnh = kh.FileAnh,
                             GhiChu = kh.GhiChu
                         };
                         await this._context.AddAsync(img);
