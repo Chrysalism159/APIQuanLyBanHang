@@ -1,4 +1,4 @@
-﻿using APIQuanLyBanHang.Data;
+﻿
 using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
@@ -30,7 +30,7 @@ namespace APIQuanLyBanHang.Repository
                         {
                             tt.TenLoaiThe = kh.TenLoaiThe;
                             tt.HanMuc = kh.HanMuc.ToString();
-                            tt.GhiChu = kh.GhiChuLoaiThe;
+                            tt.GhiChu = kh.GhiChu;
                         }
                             await _context.SaveChangesAsync();
                             await dbtran.CommitAsync();
@@ -58,7 +58,7 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(LoaiTheEntities kh)
         {
-            kh.IdLoaiThe = Guid.NewGuid();
+            kh.IdloaiThe = Guid.NewGuid();
             try
             {
                 using (var dbtran = await this._context.Database.BeginTransactionAsync())
@@ -67,10 +67,10 @@ namespace APIQuanLyBanHang.Repository
                     {
                         LoaiThe tt = new LoaiThe()
                         {
-                            IdloaiThe = kh.IdLoaiThe.ToString(),
+                            IdloaiThe = kh.IdloaiThe.ToString(),
                             TenLoaiThe = kh.TenLoaiThe,
                             HanMuc = kh.HanMuc.ToString(),
-                            GhiChu = kh.GhiChuLoaiThe
+                            GhiChu = kh.GhiChu
                         };
                         await _context.LoaiThes.AddAsync(tt);
                         await _context.SaveChangesAsync();

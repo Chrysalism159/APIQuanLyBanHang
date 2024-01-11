@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using APIQuanLyBanHang.Model;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Data;
-//IdentityDbContext<TaiKhoan>
+namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoan>
+public partial class QlbdaTtsContext : DbContext
 {
     public QlbdaTtsContext()
     {
@@ -39,28 +35,18 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoan>
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
 
+    public virtual DbSet<SanPhamChiNhanh> SanPhamChiNhanhs { get; set; }
+
     public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
 
     public virtual DbSet<TheThanhVien> TheThanhViens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=CHRYSALISM\\SQLEXPRESS;Initial Catalog=QLBDA_TTS;Integrated Security=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
-        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
-        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
-        {
-            entity.HasNoKey();
-        });
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);
@@ -361,6 +347,31 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoan>
             entity.HasOne(d => d.IdanhNavigation).WithMany(p => p.SanPhams)
                 .HasForeignKey(d => d.Idanh)
                 .HasConstraintName("FK_SanPham_Anh");
+        });
+
+        modelBuilder.Entity<SanPhamChiNhanh>(entity =>
+        {
+            entity.HasKey(e => new { e.IdsanPham, e.IdchiNhanh });
+
+            entity.ToTable("SanPhamChiNhanh");
+
+            entity.Property(e => e.IdsanPham)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("IDSanPham");
+            entity.Property(e => e.IdchiNhanh)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("IDChiNhanh");
+            entity.Property(e => e.GhiChu).HasMaxLength(50);
+
+            entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.SanPhamChiNhanhs)
+                .HasForeignKey(d => d.IdchiNhanh)
+                .HasConstraintName("FK_SanPhamChiNhanh_ChiNhanh");
+
+            entity.HasOne(d => d.IdsanPhamNavigation).WithMany(p => p.SanPhamChiNhanhs)
+                .HasForeignKey(d => d.IdsanPham)
+                .HasConstraintName("FK_SanPhamChiNhanh_SanPham");
         });
 
         modelBuilder.Entity<TaiKhoan>(entity =>

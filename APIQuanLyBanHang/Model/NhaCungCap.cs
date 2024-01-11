@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace APIQuanLyBanHang.Model;
 
 public partial class NhaCungCap
 {
-    [Key]
     public string IdnhaCungCap { get; set; } = null!;
 
     public string? TenNhaCungCap { get; set; }

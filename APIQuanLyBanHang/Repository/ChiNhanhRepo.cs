@@ -1,0 +1,171 @@
+﻿using APIQuanLyBanHang.Entity;
+using APIQuanLyBanHang.InterfaceRepo;
+using APIQuanLyBanHang.Model;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace APIQuanLyBanHang.Repository
+{
+    public class ChiNhanhRepo : IChiNhanhRepo
+    {
+        private readonly QlbdaTtsContext context;
+        private readonly IMapper mapper;
+        public ChiNhanhRepo(QlbdaTtsContext context, IMapper mapper)
+        {
+            this.context = context;
+            this.mapper = mapper;
+        }
+
+        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, ChiNhanhEntities cn)
+        {
+            try
+            {
+                using (var dbcn = await this.context.Database.BeginTransactionAsync())
+                {
+                    var chinhanhcu = await context.ChiNhanhs.FindAsync(id);
+                    if(chinhanhcu!=null)
+                    {
+                        chinhanhcu.TenChiNhanh = cn.TenChiNhanh;
+                        chinhanhcu.ĐiaChi = cn.ĐiaChi;
+                        chinhanhcu.GhiChu = cn.GhiChu;
+
+                        await context.SaveChangesAsync();
+                        await dbcn.CommitAsync();
+                        return new TrangThai()
+                        {
+                            MaTrangThai = 1,
+                            ThongBao = "Cap Nhat Thanh Cong"
+                        };
+                    }    
+                }    
+            }
+            catch (Exception ex) { }
+            return new TrangThai()
+            {
+                MaTrangThai = 0,
+                ThongBao = "Cap Nhat That Bai "
+            };
+        }
+
+        public async Task<ActionResult<List<ChiNhanhEntities>>> DanhSach()
+        {
+            try
+            {
+                List<ChiNhanh> lst = await context.ChiNhanhs.ToListAsync();
+                if(lst!=null&&lst.Count>0)
+                {
+                    return this.mapper.Map<List<ChiNhanh>, List<ChiNhanhEntities>>(lst);
+                }    
+            }
+            catch
+            {
+
+            }
+            return new List<ChiNhanhEntities>() { };
+        }
+
+        public async Task<ActionResult<TrangThai>> ThemThongTin(ChiNhanhEntities cn)
+        {
+            cn.IdchiNhanh = Guid.NewGuid();
+            try
+            {
+                using(var dbcn=await this.context.Database.BeginTransactionAsync())
+                {
+                    if(cn!=null)
+                    {
+                        ChiNhanh chiNhanh = new ChiNhanh
+                        {
+                            IdchiNhanh = cn.IdchiNhanh.ToString(),
+                            TenChiNhanh = cn.TenChiNhanh,
+                            ĐiaChi = cn.ĐiaChi,
+                            GhiChu = cn.GhiChu,
+                        };
+                        await context.ChiNhanhs.AddAsync(chiNhanh);
+                        await context.SaveChangesAsync();
+                        await dbcn.CommitAsync();
+                        return new TrangThai()
+                        {
+                            MaTrangThai = 1,
+                            ThongBao = "Them Thanh Cong"
+                        };
+
+                    }    
+                }    
+               
+            }
+            catch
+            {
+
+            }
+            return new TrangThai()
+            {
+                MaTrangThai = 0,
+                ThongBao = "Them That Bai"
+            };
+        }
+
+        public async Task<ActionResult<ChiNhanhEntities>> TimTheoID(Guid id)
+        {
+            try
+            {
+                ChiNhanh chiNhanh=await context.ChiNhanhs.FirstOrDefaultAsync(h=>h.IdchiNhanh.Equals(id));
+                if(chiNhanh!=null)
+                {
+                    return  this.mapper.Map<ChiNhanh,ChiNhanhEntities>(chiNhanh);
+                }    
+            }
+            catch { }
+            return new ChiNhanhEntities() { };
+        }
+
+        public async Task<ActionResult<List<ChiNhanhEntities>>> TimTheoTen(string ten)
+        {
+            try
+            {
+                List<ChiNhanh> lst = await context.ChiNhanhs.Where(h=>h.TenChiNhanh.Contains(ten)).ToListAsync();
+                if(lst!=null&&lst.Count>0)
+                {
+                    return this.mapper.Map<List<ChiNhanh>,List<ChiNhanhEntities>>(lst);
+                }    
+
+            }
+            catch
+            { }
+            return new List<ChiNhanhEntities>() { };
+        
+        }
+
+        public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
+        {
+            try
+            {
+                using(var dbcn=await this.context.Database.BeginTransactionAsync())
+                {
+                    var ChiNhanh = await context.ChiNhanhs.FirstOrDefaultAsync(h=>h.IdchiNhanh.Equals(id));
+                    if(ChiNhanh!=null)
+                    {
+                         context.Remove(ChiNhanh);
+                        await context.SaveChangesAsync();
+                        await dbcn.CommitAsync();
+                        return new TrangThai()
+                        {
+                            MaTrangThai = 1,
+                            ThongBao = "Xoa Thanh Cong"
+                        };
+                    }    
+                }    
+                
+            }
+            catch
+            {
+
+            }
+            return new TrangThai()
+            {
+                MaTrangThai = 0,
+                ThongBao = "Xoa That Bai"
+            };
+        }
+    }
+}

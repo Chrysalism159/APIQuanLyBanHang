@@ -6,133 +6,64 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APIQuanLyBanHang.Model;
-using APIQuanLyBanHang.Data;
+using APIQuanLyBanHang.InterfaceRepo;
+using APIQuanLyBanHang.Entity;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{action}")]
     [ApiController]
     public class ChiNhanhController : ControllerBase
     {
-        private readonly QlbdaTtsContext _context;
+        private readonly IChiNhanhRepo context;
 
-        public ChiNhanhController(QlbdaTtsContext context)
+        public ChiNhanhController(IChiNhanhRepo context)
         {
-            _context = context;
+            this.context = context;
         }
 
         // GET: api/ChiNhanh
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ChiNhanh>>> GetChiNhanhs()
+        public async Task<ActionResult<List<ChiNhanhEntities>>> DanhSach()
         {
-          if (_context.ChiNhanhs == null)
-          {
-              return NotFound();
-          }
-            return await _context.ChiNhanhs.ToListAsync();
+          return await context.DanhSach();
         }
 
         // GET: api/ChiNhanh/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ChiNhanh>> GetChiNhanh(string id)
+        public async Task<ActionResult<ChiNhanhEntities>> TimTheoID(Guid id)
         {
-          if (_context.ChiNhanhs == null)
-          {
-              return NotFound();
-          }
-            var chiNhanh = await _context.ChiNhanhs.FindAsync(id);
+            return await context.TimTheoID(id);
+        }
 
-            if (chiNhanh == null)
-            {
-                return NotFound();
-            }
-
-            return chiNhanh;
+        [HttpGet("{name}")]
+        public async Task<ActionResult<List<ChiNhanhEntities>>> TimTheoTen(string name)
+        {
+            return await context.TimTheoTen(name);
         }
 
         // PUT: api/ChiNhanh/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutChiNhanh(string id, ChiNhanh chiNhanh)
+        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, ChiNhanhEntities chiNhanh)
         {
-            if (id != chiNhanh.IdchiNhanh)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(chiNhanh).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ChiNhanhExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return await context.CapNhatThongTin(id, chiNhanh);
         }
 
         // POST: api/ChiNhanh
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ChiNhanh>> PostChiNhanh(ChiNhanh chiNhanh)
+        public async Task<ActionResult<TrangThai>> ThemThongTin(ChiNhanhEntities chiNhanh)
         {
-          if (_context.ChiNhanhs == null)
-          {
-              return Problem("Entity set 'QlbdaTtsContext.ChiNhanhs'  is null.");
-          }
-            _context.ChiNhanhs.Add(chiNhanh);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ChiNhanhExists(chiNhanh.IdchiNhanh))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetChiNhanh", new { id = chiNhanh.IdchiNhanh }, chiNhanh);
+            return await context.ThemThongTin(chiNhanh);
         }
 
         // DELETE: api/ChiNhanh/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteChiNhanh(string id)
+        public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
-            if (_context.ChiNhanhs == null)
-            {
-                return NotFound();
-            }
-            var chiNhanh = await _context.ChiNhanhs.FindAsync(id);
-            if (chiNhanh == null)
-            {
-                return NotFound();
-            }
-
-            _context.ChiNhanhs.Remove(chiNhanh);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ChiNhanhExists(string id)
-        {
-            return (_context.ChiNhanhs?.Any(e => e.IdchiNhanh == id)).GetValueOrDefault();
+            return await context.XoaThongTin(id);
         }
     }
 }

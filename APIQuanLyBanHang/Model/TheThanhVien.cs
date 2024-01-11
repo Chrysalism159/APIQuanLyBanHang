@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace APIQuanLyBanHang.Model;
 
 public partial class TheThanhVien
 {
-    [Key, Column(Order = 0)]
     public string IdtheThanhVien { get; set; } = null!;
-    [Key, Column(Order = 1)]
+
     public string? IdloaiThe { get; set; }
 
     public string? TenKhachHang { get; set; }
@@ -29,7 +26,7 @@ public partial class TheThanhVien
     public bool? GioiTinh { get; set; }
 
     public string? ĐiaChi { get; set; }
-    [DataType(DataType.Date)]
+
     public DateTime? NgaySinh { get; set; }
 
     public string? GhiChu { get; set; }

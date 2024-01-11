@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace APIQuanLyBanHang.Model;
 
 public partial class ChiNhanh
 {
-    [Key]
     public string IdchiNhanh { get; set; } = null!;
 
     public string? TenChiNhanh { get; set; }
@@ -22,4 +20,6 @@ public partial class ChiNhanh
     public virtual ICollection<PhieuChiTieu> PhieuChiTieus { get; set; } = new List<PhieuChiTieu>();
 
     public virtual ICollection<PhieuNhapHang> PhieuNhapHangs { get; set; } = new List<PhieuNhapHang>();
+
+    public virtual ICollection<SanPhamChiNhanh> SanPhamChiNhanhs { get; set; } = new List<SanPhamChiNhanh>();
 }

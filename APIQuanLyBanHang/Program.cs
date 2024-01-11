@@ -1,6 +1,7 @@
-using APIQuanLyBanHang.Data;
+
 using APIQuanLyBanHang.HandleMapping;
 using APIQuanLyBanHang.InterfaceRepo;
+using APIQuanLyBanHang.Model;
 using APIQuanLyBanHang.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
@@ -31,6 +32,10 @@ builder.Services.AddTransient<IPhieuNhapHangRepo, PhieuNhapHangRepo>();
 builder.Services.AddTransient<INhanVienRepo, NhanVienRepo>();
 builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
 builder.Services.AddTransient<ILoaiTheRepo, LoaiTheRepo>();
+builder.Services.AddTransient<IChiNhanhRepo, ChiNhanhRepo>();
+builder.Services.AddTransient<ITaiKhoanRepo, TaiKhoanRepo>();
+builder.Services.AddTransient<INhaCungCapRepo,NhaCungCapRepo>();
+builder.Services.AddTransient<IPhieuChiTieuRepo,PhieuChiTieuRepo>();
 
 //add mapper
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapProfile()));

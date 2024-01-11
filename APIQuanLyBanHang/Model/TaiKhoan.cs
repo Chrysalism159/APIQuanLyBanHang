@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class TaiKhoan : IdentityUser
+public partial class TaiKhoan
 {
-    [Key]
     public string IdtaiKhoan { get; set; } = null!;
 
     public string? Username { get; set; }

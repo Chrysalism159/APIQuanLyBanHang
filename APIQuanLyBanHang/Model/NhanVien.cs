@@ -1,28 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace APIQuanLyBanHang.Model;
 
 public partial class NhanVien
 {
-    [Key, Column(Order =0)]
     public string IdnhanVien { get; set; } = null!;
-    [Key, Column(Order = 1)]
+
     public string? IdchiNhanh { get; set; }
-    [Key, Column(Order = 2)]
+
     public string? IdtaiKhoan { get; set; }
 
     public string? TenNhanVien { get; set; }
 
     public string? Sdt { get; set; }
 
-    [DataType(DataType.Date)]
     public DateTime? NgayBatDauLamViec { get; set; }
 
     public string? Cccd { get; set; }
-    [DataType(DataType.Date)]
+
     public DateTime? NgaySinh { get; set; }
 
     public bool? GioiTinh { get; set; }

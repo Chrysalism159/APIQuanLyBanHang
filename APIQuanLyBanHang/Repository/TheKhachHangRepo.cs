@@ -1,4 +1,4 @@
-﻿using APIQuanLyBanHang.Data;
+﻿
 using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
@@ -19,7 +19,7 @@ namespace APIQuanLyBanHang.Repository
             this._map = map;
         }
 
-        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheKhachHangEntities kh)
+        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheThanhVienEntities kh)
         {
             try
             {
@@ -28,18 +28,18 @@ namespace APIQuanLyBanHang.Repository
                     TheThanhVien tt = await _context.FindAsync<TheThanhVien>(id.ToString());
                     if(tt !=  null)
                     {
-                        tt.IdloaiThe = kh.IdLoaiThe.ToString();
+                        tt.IdloaiThe = kh.IdloaiThe.ToString();
                         tt.TenKhachHang = kh.TenKhachHang;
-                        tt.Sdt = kh.SoDienThoai;
+                        tt.Sdt = kh.Sdt;
                         tt.Email = kh.Email;
                         tt.SoDiemTichLuy = kh.SoDiemTichLuy;
                         tt.SoDiemDaSuDung = kh.SoDiemDaSuDung;
-                        tt.SoTienDaTichLuy = kh.SoTienTichLuy;
+                        tt.SoTienDaTichLuy = kh.SoTienDaTichLuy;
                         tt.SoTienDaSuDung = kh.SoTienDaSuDung;
                         tt.GioiTinh = kh.GioiTinh;
-                        tt.ĐiaChi = kh.DiaChi;
-                        tt.NgaySinh = kh.NgayThangNamSinh;
-                        tt.GhiChu = kh.GhiChuKhachHang;
+                        tt.ĐiaChi = kh.ĐiaChi;
+                        tt.NgaySinh = kh.NgaySinh;
+                        tt.GhiChu = kh.GhiChu;
                     }
                     await _context.SaveChangesAsync();
                     await dbtran.CommitAsync();
@@ -50,19 +50,19 @@ namespace APIQuanLyBanHang.Repository
             }
         }
 
-        public async Task<ActionResult<List<TheKhachHangEntities>>> DanhSach()
+        public async Task<ActionResult<List<TheThanhVienEntities>>> DanhSach()
         {
             List<TheThanhVien> ds = await _context.TheThanhViens.ToListAsync();
             if(ds != null && ds.Count > 0)
             {
-                return this._map.Map<List<TheThanhVien>, List<TheKhachHangEntities>>(ds);
+                return this._map.Map<List<TheThanhVien>, List<TheThanhVienEntities>>(ds);
             }
-            return new List<TheKhachHangEntities>();
+            return new List<TheThanhVienEntities>();
         }
 
-        public async Task<ActionResult<TrangThai>> ThemThongTin(TheKhachHangEntities kh)
+        public async Task<ActionResult<TrangThai>> ThemThongTin(TheThanhVienEntities kh)
         {
-            kh.IdTheThanhVien = Guid.NewGuid();
+            kh.IdtheThanhVien = Guid.NewGuid();
             try
             {
                 using(var dbtran = await this._context.Database.BeginTransactionAsync())
@@ -71,19 +71,19 @@ namespace APIQuanLyBanHang.Repository
                     {
                         TheThanhVien tt = new TheThanhVien()
                         {
-                            IdtheThanhVien = kh.IdTheThanhVien.ToString(),
-                            IdloaiThe = kh.IdLoaiThe.ToString(),
+                            IdtheThanhVien = kh.IdtheThanhVien.ToString(),
+                            IdloaiThe = kh.IdloaiThe.ToString(),
                             TenKhachHang = kh.TenKhachHang,
-                            Sdt = kh.SoDienThoai,
+                            Sdt = kh.Sdt,
                             Email = kh.Email,
                             SoDiemTichLuy = kh.SoDiemTichLuy,
                             SoDiemDaSuDung = kh.SoDiemDaSuDung,
-                            SoTienDaTichLuy = kh.SoTienTichLuy,
+                            SoTienDaTichLuy = kh.SoTienDaTichLuy,
                             SoTienDaSuDung = kh.SoTienDaSuDung,
                             GioiTinh = kh.GioiTinh,
-                            ĐiaChi = kh.DiaChi,
-                            NgaySinh = kh.NgayThangNamSinh,
-                            GhiChu = kh.GhiChuKhachHang
+                            ĐiaChi = kh.ĐiaChi,
+                            NgaySinh = kh.NgaySinh,
+                            GhiChu = kh.GhiChu
                         };
                         _context.Add(tt);
                         await _context.SaveChangesAsync();
@@ -96,24 +96,24 @@ namespace APIQuanLyBanHang.Repository
             return new TrangThai() { MaTrangThai = 0, ThongBao = "Them that bai" };
         }
 
-        public async Task<ActionResult<TheKhachHangEntities>> TimTheoID(Guid id)
+        public async Task<ActionResult<TheThanhVienEntities>> TimTheoID(Guid id)
         {
             TheThanhVien ds = await _context.TheThanhViens.FindAsync(id.ToString());
             if (ds != null)
             {
-                return this._map.Map<TheThanhVien, TheKhachHangEntities>(ds);
+                return this._map.Map<TheThanhVien, TheThanhVienEntities>(ds);
             }
-            return new TheKhachHangEntities();
+            return new TheThanhVienEntities();
         }
 
-        public async Task<ActionResult<List<TheKhachHangEntities>>> TimTheoTen(string name)
+        public async Task<ActionResult<List<TheThanhVienEntities>>> TimTheoTen(string name)
         {
             List<TheThanhVien> ds = await _context.TheThanhViens.Where( m=>m.TenKhachHang.Contains(name)).ToListAsync();
             if (ds != null && ds.Count > 0)
             {
-                return this._map.Map<List<TheThanhVien>, List<TheKhachHangEntities>>(ds);
+                return this._map.Map<List<TheThanhVien>, List<TheThanhVienEntities>>(ds);
             }
-            return new List<TheKhachHangEntities>();
+            return new List<TheThanhVienEntities>();
         }
 
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id) 
