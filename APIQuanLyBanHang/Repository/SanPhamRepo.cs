@@ -28,13 +28,13 @@ namespace APIQuanLyBanHang.Repository
                     SanPham tt = await _context.SanPhams.FindAsync(id.ToString());
                     if (tt != null && kh != null)
                     {
-                        tt.Idanh = kh.IdHinhAnh.ToString();
+                        tt.Idanh = kh.Idanh.ToString();
                         tt.TenSanPham = kh.TenSanPham;
                         tt.GiaBan = kh.GiaBan;
                         tt.GiaVon = kh.GiaVon;
                         tt.DonVi = kh.DonVi;
                         tt.SoLuongHienCo = kh.SoLuongHienCo;
-                        tt.GhiChu = kh.GhiChuSanPham;
+                        tt.GhiChu = kh.GhiChu;
 
                     }
                     await _context.SaveChangesAsync();
@@ -69,14 +69,14 @@ namespace APIQuanLyBanHang.Repository
                 {
                     SanPham tt = new SanPham()
                     {
-                        IdsanPham = kh.IdSanPham.ToString(),
-                        Idanh = kh.IdHinhAnh.ToString(),
+                        IdsanPham = kh.IdsanPham.ToString(),
+                        Idanh = kh.Idanh.ToString(),
                         TenSanPham = kh.TenSanPham,
                         GiaBan = kh.GiaBan,
                         GiaVon = kh.GiaVon,
                         DonVi = kh.DonVi,
                         SoLuongHienCo = kh.SoLuongHienCo,
-                        GhiChu = kh.GhiChuSanPham
+                        GhiChu = kh.GhiChu
                     };
                     
                     await _context.AddAsync(tt);
