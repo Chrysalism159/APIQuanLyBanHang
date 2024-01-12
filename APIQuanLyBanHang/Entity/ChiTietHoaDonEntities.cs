@@ -10,7 +10,7 @@
 
         public Guid? IdphieuNhapHang { get; set; }
 
-        public Guid IdPhieuChi { get; set; }
+       
 
         public decimal? ChietKhau { get; set; }
 

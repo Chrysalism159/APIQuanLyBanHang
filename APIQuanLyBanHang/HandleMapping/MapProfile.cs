@@ -20,7 +20,7 @@ namespace APIQuanLyBanHang.HandleMapping
             CreateMap<HoaDon, HoaDonEntities>();
             CreateMap<ChiTietHoaDon, ChiTietHoaDonEntities>();
             CreateMap<PhieuNhapHang, PhieuNhapHangEntities>();
-
+            CreateMap<SanPhamChiNhanh, SanPhamChiNhanhEntities>();
         }
 
     }
