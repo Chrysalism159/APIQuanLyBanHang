@@ -87,6 +87,7 @@ builder.Services.AddTransient<ISanPhamRepo, SanPhamRepo>();
 builder.Services.AddTransient<IHoaDonRepo, HoaDonRepo>();
 builder.Services.AddTransient<INhaCungCapRepo, NhaCungCapRepo>();
 builder.Services.AddTransient<IPhieuNhapHangRepo, PhieuNhapHangRepo>();
+builder.Services.AddTransient<ISanPhamChiNhanhRepo, SanPhamChiNhanhRepo>();
 builder.Services.AddTransient<INhanVienRepo, NhanVienRepo>();
 builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
 builder.Services.AddTransient<IChiNhanhRepo, ChiNhanhRepo>();
@@ -97,6 +98,7 @@ builder.Services.AddTransient<ITaiKhoanRepo, TaiKhoanRepo>();
 //Tai Khoan repo cua IdentityDbContext
 builder.Services.AddTransient<ITaiKhoanRepository, TaiKhoanRepository>();
 builder.Services.AddTransient<IPhieuChiTieuRepo, PhieuChiTieuRepo>();
+builder.Services.AddTransient<IChiTietHoaDonRepo, ChiTietHoaDonRepo>();
 //add mapper
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapProfile()));
 IMapper map = automapper.CreateMapper();

@@ -24,4 +24,6 @@ public partial class SanPham
     public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; } = new List<ChiTietHoaDon>();
 
     public virtual Anh? IdanhNavigation { get; set; }
+
+    public virtual ICollection<SanPhamChiNhanh> SanPhamChiNhanhs { get; set; } = new List<SanPhamChiNhanh>();
 }

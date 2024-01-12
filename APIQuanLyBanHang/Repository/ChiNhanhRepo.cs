@@ -142,7 +142,7 @@ namespace APIQuanLyBanHang.Repository
             {
                 using(var dbcn=await this.context.Database.BeginTransactionAsync())
                 {
-                    var ChiNhanh = await context.ChiNhanhs.FirstOrDefaultAsync(h=>h.IdchiNhanh.Equals(id));
+                    var ChiNhanh = await context.ChiNhanhs.FirstOrDefaultAsync(h=>h.IdchiNhanh.Equals(id.ToString()));
                     if(ChiNhanh!=null)
                     {
                          context.Remove(ChiNhanh);

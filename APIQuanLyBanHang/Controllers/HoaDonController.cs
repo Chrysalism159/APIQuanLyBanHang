@@ -1,48 +1,52 @@
 ﻿using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.InterfaceRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]/{action}")]
+    [Route("api/[controller]")]
     [ApiController]
     public class HoaDonController : ControllerBase
     {
-        private readonly IHoaDonRepo _repo;
+        private readonly IHoaDonRepo _context;
 
-        public HoaDonController(IHoaDonRepo repo) {
-            this._repo = repo;  
+        public HoaDonController(IHoaDonRepo _context)
+        {
+            this._context = _context;
         }
         [HttpGet]
+        [Authorize(Roles = "NhanVien")]
         public async Task<ActionResult<List<HoaDonEntities>>> DanhSach()
         {
-            return await _repo.DanhSach();
+            return await _context.DanhSach();
         }
-        [HttpGet("{idKhachHang}")]
-        public async Task<ActionResult<HoaDonEntities>> TimTheoIDKhachHang(Guid id)
+        [HttpGet("{id}")]
+        [Authorize(Roles = "QuanLy")]
+        public async Task<ActionResult<HoaDonEntities>> TimTheoID(Guid id)
         {
-            return await _repo.TimTheoIDKhachHang(id);
+            return await _context.TimTheoIDKhachHang(id);
         }
-        [HttpGet("{idNhanVien}")]
-        public async Task<ActionResult<HoaDonEntities>> TimTheoIDNhanVien(Guid id)
+        [HttpGet("{idnv}")]
+        public async Task<ActionResult<HoaDonEntities>> TimTheoIDNhanVien(Guid idnv)
         {
-            return await _repo.TimTheoIDNhanVien(id);
+            return await _context.TimTheoIDNhanVien(idnv);
         }
         [HttpPost]
         public async Task<ActionResult<TrangThai>> ThemThongTin(HoaDonEntities kh)
         {
-            return await _repo.ThemThongTin(kh);
+            return await _context.ThemThongTin(kh);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, HoaDonEntities kh)
         {
-            return await _repo.CapNhatThongTin(id, kh);
+            return await _context.CapNhatThongTin(id, kh);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
-            return await _repo.XoaThongTin(id);
+            return await _context.XoaThongTin(id);
         }
     }
 }
