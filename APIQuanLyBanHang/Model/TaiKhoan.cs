@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class TaiKhoan
+public partial class TaiKhoan 
 {
     public string IdtaiKhoan { get; set; } = null!;
 
-    public string? Username { get; set; }
+    public string? TenNguoiDung { get; set; }
 
-    public string? Password { get; set; }
+    public string? MatKhau { get; set; }
 
     public string? PhanQuyen { get; set; }
 

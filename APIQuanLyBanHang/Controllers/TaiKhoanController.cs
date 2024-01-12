@@ -1,4 +1,5 @@
 ﻿using APIQuanLyBanHang.Helper;
+using APIQuanLyBanHang.InterfaceRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,8 +16,8 @@ namespace APIQuanLyBanHang.Controllers
             this.account = acc;
         }
 
-        [HttpPost("SignUpAsync")]
-        public async Task<IActionResult> SignInAsync(QuanLyThongTinTaiKhoan model)
+        [HttpPost("SignInAsync")]
+        public async Task<IActionResult> SignInAsync(QuanLyTaiKhoanDangNhap model)
         {
             var result = await account.SignInAsync(model);
             if (string.IsNullOrEmpty(result))
@@ -26,7 +27,7 @@ namespace APIQuanLyBanHang.Controllers
             return Ok(result);
         }
 
-        [HttpPost("SignInAsync")]
+        [HttpPost("SignUpAsync")]
         public async Task<IActionResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
         {
             var result = await account.SignUpAsync(model);

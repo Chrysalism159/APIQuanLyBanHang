@@ -7,6 +7,7 @@ using APIQuanLyBanHang.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -14,15 +15,23 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
+using APIQuanLyBanHang.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 //Conection string
 builder.Services.AddDbContext<APIQuanLyBanHang.Model.QlbdaTtsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConectionString") ?? throw new InvalidOperationException("Connection string 'ConectionString' not found.")));
 
+builder.Services.AddDbContext<IdentityScaffordContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityScaffordContextConnection") ?? throw new InvalidOperationException("Connection string 'ConectionString' not found.")));
+
+//builder.Services.AddDefaultIdentity<TaiKhoanNguoiDung>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityScaffordContext>();
+
+
+
 // Add services to the container.
 builder.Services.AddIdentity<TaiKhoanNguoiDung, IdentityRole>()
-    .AddEntityFrameworkStores<QlbdaTtsContext>().AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<IdentityScaffordContext>().AddDefaultTokenProviders();
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,19 +65,19 @@ builder.Services.AddSwaggerGen(option =>
         Scheme = "Bearer"
     });
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
+{
+{
+new OpenApiSecurityScheme
+{
+Reference = new OpenApiReference
+{
+Type=ReferenceType.SecurityScheme,
+Id="Bearer"
+}
+},
+new string[]{}
+}
+});
 });
 
 
@@ -83,13 +92,25 @@ builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
 builder.Services.AddTransient<IChiNhanhRepo, ChiNhanhRepo>();
 builder.Services.AddTransient<ILoaiTheRepo, LoaiTheRepo>();
 builder.Services.AddTransient<IAnhRepo, AnhRepo>();
+//Taikhoan repo cua Db
 builder.Services.AddTransient<ITaiKhoanRepo, TaiKhoanRepo>();
+//Tai Khoan repo cua IdentityDbContext
+builder.Services.AddTransient<ITaiKhoanRepository, TaiKhoanRepository>();
 builder.Services.AddTransient<IPhieuChiTieuRepo, PhieuChiTieuRepo>();
 //add mapper
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapProfile()));
 IMapper map = automapper.CreateMapper();
 builder.Services.AddSingleton(map);
+//Dang ki phan quyen truy cap
+//builder.Services.AddScoped<TaiKhoanRepo>();
 
+//// Đăng ký ủy quyền
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("QuanLyPolicy", policy =>
+//        policy.Requirements.Add(new XacThucNguoiDungRequirement()));
+//});
+//builder.Services.AddSingleton<IAuthorizationHandler, XacThucNguoiDungAuthorizationHandler>();
 
 var app = builder.Build();
 

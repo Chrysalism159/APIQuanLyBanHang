@@ -17,13 +17,12 @@ namespace APIQuanLyBanHang.Controllers
             this._context = _context;
         }
         [HttpGet]
-        [Authorize(Roles ="NhanVien")]
         public async Task<ActionResult<List<LoaiTheEntities>>> DanhSach()
         {
             return await _context.DanhSach();
         }
         [HttpGet("{id}")]
-        [Authorize(Roles = "QuanLy")]
+        [Authorize(Policy = "QuanLyPolicy")]
         public async Task<ActionResult<LoaiTheEntities>> TimTheoID(Guid id)
         {
             return await _context.TimTheoID(id);

@@ -17,5 +17,7 @@
         public decimal? TongTienSauChietKhau { get; set; }
 
         public string? GhiChu { get; set; }
+
+        public List<ChiTietHoaDonEntities>? ChiTietHD{ get; set; }
     }
 }

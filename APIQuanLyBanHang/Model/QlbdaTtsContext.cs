@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using APIQuanLyBanHang.Areas.Identity.Data;
+using APIQuanLyBanHang.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : DbContext
+public partial class QlbdaTtsContext : IdentityScaffordContext
 {
-    public QlbdaTtsContext()
-    {
-    }
+    //public QlbdaTtsContext()
+    //{
+    //}
 
     public QlbdaTtsContext(DbContextOptions<QlbdaTtsContext> options)
         : base(options)
@@ -33,9 +35,6 @@ public partial class QlbdaTtsContext : DbContext
 
     public virtual DbSet<PhieuNhapHang> PhieuNhapHangs { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
-
-    public virtual DbSet<RoleClaim> RoleClaims { get; set; }
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
 
@@ -43,15 +42,6 @@ public partial class QlbdaTtsContext : DbContext
 
     public virtual DbSet<TheThanhVien> TheThanhViens { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
-    public virtual DbSet<UserClaim> UserClaims { get; set; }
-
-    public virtual DbSet<UserLogin> UserLogins { get; set; }
-
-    public virtual DbSet<UserRole> UserRoles { get; set; }
-
-    public virtual DbSet<UserToken> UserTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -59,6 +49,7 @@ public partial class QlbdaTtsContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);
@@ -372,9 +363,9 @@ public partial class QlbdaTtsContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("IDTaiKhoan");
             entity.Property(e => e.GhiChu).HasMaxLength(50);
-            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.MatKhau).HasMaxLength(50);
             entity.Property(e => e.PhanQuyen).HasMaxLength(50);
-            entity.Property(e => e.Username).HasMaxLength(50);
+            entity.Property(e => e.TenNguoiDung).HasMaxLength(50);
         });
 
         modelBuilder.Entity<TheThanhVien>(entity =>
@@ -408,20 +399,7 @@ public partial class QlbdaTtsContext : DbContext
                 .HasConstraintName("FK_TheThanhVien_LoaiThe");
         });
 
-        modelBuilder.Entity<UserLogin>(entity =>
-        {
-            entity.HasNoKey();
-        });
-
-        modelBuilder.Entity<UserRole>(entity =>
-        {
-            entity.HasNoKey();
-        });
-
-        modelBuilder.Entity<UserToken>(entity =>
-        {
-            entity.HasNoKey();
-        });
+       
 
         OnModelCreatingPartial(modelBuilder);
     }

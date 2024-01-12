@@ -16,7 +16,7 @@ namespace APIQuanLyBanHang.Repository
             this.mapper = mapper;
             this.context = context;
         }
-
+        
         public async Task<ActionResult<List<TaiKhoanEntities>>> DanhSach()
         {
             
@@ -46,8 +46,8 @@ namespace APIQuanLyBanHang.Repository
                     {
                         tim.PhanQuyen = tk.PhanQuyen;
                         tim.GhiChu= tk.GhiChu;
-                        tim.Password= tk.Password;
-                        tim.Username= tk.Username;
+                        tim.MatKhau= tk.Password;
+                        tim.TenNguoiDung= tk.Username;
                         await context.SaveChangesAsync();
                         await dbtk.CommitAsync();
                         return new TrangThai()
@@ -81,8 +81,8 @@ namespace APIQuanLyBanHang.Repository
                         TaiKhoan taiKhoan = new TaiKhoan()
                         {
                             IdtaiKhoan = tk.IdtaiKhoan.ToString(),
-                            Username = tk.Username,
-                            Password = tk.Password,
+                            TenNguoiDung = tk.Username,
+                            MatKhau = tk.Password,
                             PhanQuyen = tk.PhanQuyen,
                             GhiChu = tk.GhiChu
                         };
@@ -126,7 +126,7 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                List<TaiKhoan> lst=await context.TaiKhoans.Where(h=>h.Username.Contains(name)).ToListAsync();
+                List<TaiKhoan> lst=await context.TaiKhoans.Where(h=>h.TenNguoiDung.Contains(name)).ToListAsync();
                 if(lst!=null&&lst.Count>0)
                 {
                     return this.mapper.Map<List<TaiKhoanEntities>>(lst);
@@ -163,6 +163,11 @@ namespace APIQuanLyBanHang.Repository
                 MaTrangThai = 0,
                 ThongBao = "Xoa That Bai"
             };
+        }
+
+        internal string GetUserRole(string? username)
+        {
+            throw new NotImplementedException();
         }
     }
 }

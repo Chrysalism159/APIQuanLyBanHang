@@ -16,14 +16,36 @@ namespace APIQuanLyBanHang.Repository
             this._context = _context;
             this.map = map;
         }
-        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, HoaDonEntities kh)
+        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, HoaDonEntities kh)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var dbtran = await _context.Database.BeginTransactionAsync())
+                {
+                    HoaDon tt = await _context.HoaDons.FirstOrDefaultAsync(m=>m.IdhoaDon.Equals(kh.IdhoaDon.ToString()));
+                    if(tt != null)
+                    {
+                        tt.IdhoaDon = kh.IdhoaDon.ToString();
+                        tt.IdchiNhanh = kh.IdchiNhanh.ToString();
+                        tt.IdnhanVien = kh.IdnhanVien.ToString();
+                        tt.IdtheThanhVien = kh.IdtheThanhVien.ToString();
+                        tt.NgayLapHoaDon = kh.NgayLapHoaDon;
+
+                    }
+                        await _context.SaveChangesAsync();
+                        await dbtran.CommitAsync();
+                        return new TrangThai() { MaTrangThai = 1, ThongBao = "Sua thanh cong!" };
+                    
+                }
+
+            }
+            catch (Exception ex) { }
+            return new TrangThai() { MaTrangThai = 0, ThongBao = "Xoa that bai!" };
         }
 
         public async Task<ActionResult<List<HoaDonEntities>>> DanhSach()
         {
-            List<HoaDon> ds = await _context.HoaDons.ToListAsync();
+            List<HoaDon> ds = await _context.HoaDons.Include(m=>m.ChiTietHoaDons).ToListAsync();
             if (ds != null && ds.Count > 0) {
                 return this.map.Map<List<HoaDon>, List<HoaDonEntities>>(ds);
             }
@@ -47,16 +69,16 @@ namespace APIQuanLyBanHang.Repository
                     };
                     if (tt != null)
                     {
-                        _context.HoaDons.Remove(tt);
+                        _context.HoaDons.AddAsync(tt);
                         await _context.SaveChangesAsync();
                         await dbtran.CommitAsync();
-                        return new TrangThai() { MaTrangThai = 1, ThongBao = "Xoa thanh cong!" };
+                        return new TrangThai() { MaTrangThai = 1, ThongBao = "Them thanh cong!" };
                     }
                 }
 
             }
             catch (Exception ex) { }
-            return new TrangThai() { MaTrangThai = 0, ThongBao = "Xoa that bai!" };
+            return new TrangThai() { MaTrangThai = 0, ThongBao = "Them that bai!" };
         }
 
         public async Task<ActionResult<HoaDonEntities>> TimTheoIDKhachHang(Guid id)
