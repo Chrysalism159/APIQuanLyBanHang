@@ -50,26 +50,26 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<List<SanPhamChiNhanhEntities>>> DanhSach()
         {
-                try
-                {
-                    List<SanPhamChiNhanh> lst=await this.context.SanPhamChiNhanhs.ToListAsync();
-                if(lst.Count>0&&lst!=null)
+            try
+            {
+                List<SanPhamChiNhanh> lst = await this.context.SanPhamChiNhanhs.ToListAsync();
+                if (lst.Count > 0 && lst != null)
                 {
                     return this.mapper.Map<List<SanPhamChiNhanh>, List<SanPhamChiNhanhEntities>>(lst);
-                }    
                 }
-        catch (Exception ex) { }
-            return new  List<SanPhamChiNhanhEntities>();
+            }
+            catch (Exception ex) { }
+            return new List<SanPhamChiNhanhEntities>();
         }
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(SanPhamChiNhanhEntities spcn)
         {
             try
             {
-                
-                using(var dbsp= await this.context.Database.BeginTransactionAsync())
+
+                using (var dbsp = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(spcn!=null)
+                    if (spcn != null)
                     {
                         SanPhamChiNhanh sp = new SanPhamChiNhanh()
                         {
@@ -103,12 +103,12 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var sp=await this.context.SanPhamChiNhanhs.FirstOrDefaultAsync(h=>(h.IdchiNhanh.Equals(idcn.ToString())&&h.IdsanPham.Equals(idsp.ToString())));
-                if(sp!=null)
+                var sp = await this.context.SanPhamChiNhanhs.FirstOrDefaultAsync(h => (h.IdchiNhanh.Equals(idcn.ToString()) && h.IdsanPham.Equals(idsp.ToString())));
+                if (sp != null)
                 {
                     return this.mapper.Map<SanPhamChiNhanhEntities>(sp);
                 }
-                
+
             }
             catch
             {
@@ -122,10 +122,10 @@ namespace APIQuanLyBanHang.Repository
             try
             {
                 var sp = await this.context.SanPhamChiNhanhs.FindAsync(idcn.ToString(), idsp.ToString());
-                using(var dbsp=await this.context.Database.BeginTransactionAsync())
+                using (var dbsp = await this.context.Database.BeginTransactionAsync())
                 {
 
-                    if(sp!=null)
+                    if (sp != null)
                     {
                         this.context.SanPhamChiNhanhs.Remove(sp);
                         await context.SaveChangesAsync();

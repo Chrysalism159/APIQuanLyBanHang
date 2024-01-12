@@ -22,7 +22,7 @@ namespace APIQuanLyBanHang.Controllers
             return await _context.DanhSach();
         }
         [HttpGet("{id}")]
-        [Authorize(Policy = "QuanLyPolicy")]
+        [Authorize(Roles = "QuanLy")]
         public async Task<ActionResult<LoaiTheEntities>> TimTheoID(Guid id)
         {
             return await _context.TimTheoID(id);

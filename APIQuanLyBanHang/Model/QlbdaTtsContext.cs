@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using APIQuanLyBanHang.Areas.Identity.Data;
 using APIQuanLyBanHang.Helper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
@@ -34,7 +35,7 @@ public partial class QlbdaTtsContext : IdentityScaffordContext
     public virtual DbSet<PhieuChiTieu> PhieuChiTieus { get; set; }
 
     public virtual DbSet<PhieuNhapHang> PhieuNhapHangs { get; set; }
-
+    public virtual DbSet<SanPhamChiNhanh> SanPhamChiNhanhs { get; set; }
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
 
@@ -49,7 +50,20 @@ public partial class QlbdaTtsContext : IdentityScaffordContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<SanPhamChiNhanh>()
+            .HasKey(c => new { c.IdchiNhanh, c.IdsanPham });
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);
