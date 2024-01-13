@@ -63,6 +63,7 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(SanPhamEntities kh)
         {
+            kh.IdsanPham = Guid.NewGuid();
             try
             {
                 using (var dbtran = await this._context.Database.BeginTransactionAsync())
@@ -93,19 +94,71 @@ namespace APIQuanLyBanHang.Repository
             return new TrangThai() { MaTrangThai = 0, ThongBao = "Them that bai" };
         }
 
-        public Task<ActionResult<SanPhamEntities>> TimTheoID(Guid id)
+        public async Task<ActionResult<SanPhamEntities>> TimTheoID(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp= await this._context.SanPhams.FirstOrDefaultAsync(h=>h.IdsanPham.Equals(id.ToString()));
+                if(sp!=null)
+                {
+                    return this._map.Map<SanPhamEntities>(sp);
+                }    
+
+            }
+            catch
+            {
+
+            }
+            return new SanPhamEntities() { };
         }
 
-        public Task<ActionResult<List<SanPhamEntities>>> TimTheoTen(string name)
+        public async Task<ActionResult<List<SanPhamEntities>>> TimTheoTen(string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<SanPham>lst= await this._context.SanPhams.Where(h=>h.TenSanPham.Contains(name)).ToListAsync();
+                if(lst.Count>0&&lst!=null)
+                {
+                    return  this._map.Map<List<SanPham>, List<SanPhamEntities>>(lst);
+                }    
+            }
+            catch
+            {
+
+            }
+            return new List<SanPhamEntities>() { };
         }
 
-        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
+        public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp = await this._context.SanPhams.FindAsync(id.ToString());
+                using(var dbsp= await this._context.Database.BeginTransactionAsync())
+                {
+                    if(sp!=null)
+                    {
+                        this._context.Remove(sp);
+                        await this._context.SaveChangesAsync();
+                        await dbsp.CommitAsync();
+                        return new TrangThai()
+                        {
+                            MaTrangThai = 1,
+                            ThongBao = "Xoa Thanh Cong"
+                        };
+                    }    
+
+                }    
+            }
+            catch
+            {
+
+            }
+            return new TrangThai()
+            {
+                MaTrangThai = 0,
+                ThongBao = "Xoa That Bai "
+            };
         }
     }
 }

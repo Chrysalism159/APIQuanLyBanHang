@@ -46,8 +46,8 @@ namespace APIQuanLyBanHang.Repository
                     {
                         tim.PhanQuyen = tk.PhanQuyen;
                         tim.GhiChu= tk.GhiChu;
-                        tim.MatKhau= tk.Password;
-                        tim.TenNguoiDung= tk.Username;
+                        tim.Password= tk.Password;
+                        tim.Username= tk.Username;
                         await context.SaveChangesAsync();
                         await dbtk.CommitAsync();
                         return new TrangThai()
@@ -81,8 +81,8 @@ namespace APIQuanLyBanHang.Repository
                         TaiKhoan taiKhoan = new TaiKhoan()
                         {
                             IdtaiKhoan = tk.IdtaiKhoan.ToString(),
-                            TenNguoiDung = tk.Username,
-                            MatKhau = tk.Password,
+                            Username = tk.Username,
+                            Password = tk.Password,
                             PhanQuyen = tk.PhanQuyen,
                             GhiChu = tk.GhiChu
                         };
@@ -126,7 +126,7 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                List<TaiKhoan> lst=await context.TaiKhoans.Where(h=>h.TenNguoiDung.Contains(name)).ToListAsync();
+                List<TaiKhoan> lst=await context.TaiKhoans.Where(h=>h.Username.Contains(name)).ToListAsync();
                 if(lst!=null&&lst.Count>0)
                 {
                     return this.mapper.Map<List<TaiKhoanEntities>>(lst);

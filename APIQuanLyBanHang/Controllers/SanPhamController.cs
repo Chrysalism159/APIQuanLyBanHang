@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{action}")]
     [ApiController]
     public class SanPhamController : ControllerBase
     {
@@ -20,10 +20,31 @@ namespace APIQuanLyBanHang.Controllers
         {
             return await _repo.DanhSach();
         }
+        [HttpGet("{name}")]
+        public async Task<ActionResult<List<SanPhamEntities>>> TimTheoTen(string name)
+        {
+            return await _repo.TimTheoTen(name);
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SanPhamEntities>> TimTheoID(Guid id)
+        {
+            return await _repo.TimTheoID(id);
+        }
         [HttpPost]
         public async Task<ActionResult<TrangThai>> ThemThongTin(SanPhamEntities kh)
         {
             return await _repo.ThemThongTin(kh);
+        }
+        [HttpPut]
+        public async Task<ActionResult<TrangThai>>CapNhatThongTin(Guid id,SanPhamEntities kh)
+
+        {
+            return await _repo.CapNhatThongTin(id,kh);
+        }
+        [HttpDelete]
+        public async Task<ActionResult<TrangThai>>XoaThongTin(Guid id)
+        {
+            return await _repo.XoaThongTin(id);
         }
     }
 }
