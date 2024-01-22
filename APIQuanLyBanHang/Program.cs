@@ -3,7 +3,6 @@ using APIQuanLyBanHang.HandleMapping;
 using APIQuanLyBanHang.Helper;
 using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
-using APIQuanLyBanHang.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,6 +15,8 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using APIQuanLyBanHang.Areas.Identity.Data;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 //Conection string
@@ -27,7 +28,24 @@ builder.Services.AddDbContext<IdentityScaffordContext>(options =>
 
 //builder.Services.AddDefaultIdentity<TaiKhoanNguoiDung>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityScaffordContext>();
 
-
+//static IHostBuilder CreateHostBuilder(string[] args) =>
+//        Host.CreateDefaultBuilder(args)
+//            .ConfigureWebHostDefaults(webBuilder =>
+//            {
+//                webBuilder.UseUrls("http://*:5000"); // Specify your desired port
+//                webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
+//                {
+//                    // Additional configuration if needed
+//                });
+//                webBuilder.ConfigureServices((hostingContext, services) =>
+//                {
+//                    // Configure services if needed
+//                });
+//                webBuilder.Configure((app) =>
+//                {
+//                    // Configure app if needed
+//                });
+//            });
 
 // Add services to the container.
 builder.Services.AddIdentity<TaiKhoanNguoiDung, IdentityRole>()
@@ -48,7 +66,15 @@ builder.Services.AddAuthentication(options => {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
     };
 });
-
+//update cors, cho phep angular truy cap api
+builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
+{
+    build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+}));
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 60000000;
+});
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -82,23 +108,23 @@ new string[]{}
 
 
 //Dang ki dich vu cho ca repository
-builder.Services.AddTransient<ITheKhachHangRepo, TheKhachHangRepo>();
-builder.Services.AddTransient<ISanPhamRepo, SanPhamRepo>();
-builder.Services.AddTransient<IHoaDonRepo, HoaDonRepo>();
-builder.Services.AddTransient<INhaCungCapRepo, NhaCungCapRepo>();
-builder.Services.AddTransient<IPhieuNhapHangRepo, PhieuNhapHangRepo>();
-builder.Services.AddTransient<ISanPhamChiNhanhRepo, SanPhamChiNhanhRepo>();
-builder.Services.AddTransient<INhanVienRepo, NhanVienRepo>();
-builder.Services.AddTransient<IQuanLyHinhAnhRepo, QuanLyHinhAnhRepo>();
-builder.Services.AddTransient<IChiNhanhRepo, ChiNhanhRepo>();
-builder.Services.AddTransient<ILoaiTheRepo, LoaiTheRepo>();
-builder.Services.AddTransient<IAnhRepo, AnhRepo>();
+builder.Services.AddTransient<ITheKhachHangRepository, TheKhachHangRepository>();
+builder.Services.AddTransient<ISanPhamRepository, SanPhamRepository>();
+builder.Services.AddTransient<IHoaDonRepository, HoaDonRepository>();
+builder.Services.AddTransient<INhaCungCapRepository, NhaCungCapRepository>();
+builder.Services.AddTransient<IPhieuNhapHangRepository, PhieuNhapHangRepository>();
+builder.Services.AddTransient<ISanPhamChiNhanhRepository, SanPhamChiNhanhRepository>();
+builder.Services.AddTransient<INhanVienRepository, NhanVienRepository>();
+builder.Services.AddTransient<IQuanLyHinhAnhRepository, QuanLyHinhAnhRepository>();
+builder.Services.AddTransient<IChiNhanhRepository, ChiNhanhRepository>();
+builder.Services.AddTransient<ILoaiTheRepository, LoaiTheRepository>();
+builder.Services.AddTransient<IAnhRepository, AnhRepository>();
 //Taikhoan repo cua Db
-builder.Services.AddTransient<ITaiKhoanRepo, TaiKhoanRepo>();
-//Tai Khoan repo cua IdentityDbContext
 builder.Services.AddTransient<ITaiKhoanRepository, TaiKhoanRepository>();
-builder.Services.AddTransient<IPhieuChiTieuRepo, PhieuChiTieuRepo>();
-builder.Services.AddTransient<IChiTietHoaDonRepo, ChiTietHoaDonRepo>();
+//Tai Khoan repo cua IdentityDbContext
+builder.Services.AddTransient<ITaiKhoanRepositories, TaiKhoanRepositories>();
+builder.Services.AddTransient<IPhieuChiTieuRepository, PhieuChiTieuRepository>();
+builder.Services.AddTransient<IChiTietHoaDonRepository, ChiTietHoaDonRepository>();
 //add mapper
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapProfile()));
 IMapper map = automapper.CreateMapper();
@@ -111,9 +137,9 @@ builder.Services.AddSingleton(map);
 //{
 //    options.AddPolicy("QuanLyPolicy", policy =>
 //        policy.Requirements.Add(new XacThucNguoiDungRequirement()));
-//});
+//});  \
 //builder.Services.AddSingleton<IAuthorizationHandler, XacThucNguoiDungAuthorizationHandler>();
-
+//CreateHostBuilder(args).Build().Run();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -122,7 +148,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "wwwroot/productimg")),
+    RequestPath = "/Resources"
+});
+app.UseCors("corspolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -11,7 +11,5 @@ public partial class Anh
 
     public string? GhiChu { get; set; }
 
-    public virtual ICollection<PhieuNhapHang> PhieuNhapHangs { get; set; } = new List<PhieuNhapHang>();
-
     public virtual ICollection<SanPham> SanPhams { get; set; } = new List<SanPham>();
 }

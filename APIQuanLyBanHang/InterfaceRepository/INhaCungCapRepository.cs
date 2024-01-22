@@ -1,18 +1,26 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class NhaCungCapRepo : INhaCungCapRepo
+    public interface INhaCungCapRepository
+    {
+        public Task<ActionResult<List<NhaCungCapEntities>>> DanhSach();
+        public Task<ActionResult<NhaCungCapEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<List<NhaCungCapEntities>>> TimTheoTen(string name);
+        public Task<ActionResult<TrangThai>> ThemThongTin(NhaCungCapEntities cn);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, NhaCungCapEntities cn);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class NhaCungCapRepository : INhaCungCapRepository
 
     {
         private readonly QlbdaTtsContext context;
         private readonly IMapper mapper;
-        public NhaCungCapRepo(QlbdaTtsContext qlbdaTtsContext,IMapper mapper)
+        public NhaCungCapRepository(QlbdaTtsContext qlbdaTtsContext, IMapper mapper)
         {
             this.context = qlbdaTtsContext;
             this.mapper = mapper;
@@ -21,18 +29,18 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var ncc=await this.context.NhaCungCaps.FindAsync(id.ToString());
-                using(var dbncc=await this.context.Database.BeginTransactionAsync())
+                var ncc = await this.context.NhaCungCaps.FindAsync(id.ToString());
+                using (var dbncc = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(dbncc!=null)
+                    if (dbncc != null)
                     {
                         ncc.SoTienNhapHang = cn.SoTienNhapHang;
                         ncc.SoTienDaThanhToan = cn.SoTienDaThanhToan;
-                        ncc.TenNhaCungCap=cn.TenNhaCungCap;
+                        ncc.TenNhaCungCap = cn.TenNhaCungCap;
                         ncc.TenNguoiDaiDien = cn.TenNguoiDaiDien;
-                        ncc.Sdt=cn.Sdt;
-                        ncc.DiaChi=cn.DiaChi;
-                        ncc.GhiChu=cn.GhiChu;
+                        ncc.Sdt = cn.Sdt;
+                        ncc.DiaChi = cn.DiaChi;
+                        ncc.GhiChu = cn.GhiChu;
 
                         await context.SaveChangesAsync();
                         await dbncc.CommitAsync();
@@ -59,10 +67,10 @@ namespace APIQuanLyBanHang.Repository
             try
             {
                 List<NhaCungCap> lst = await this.context.NhaCungCaps.ToListAsync();
-                if(lst!=null&& lst.Count>0)
+                if (lst != null && lst.Count > 0)
                 {
                     return this.mapper.Map<List<NhaCungCap>, List<NhaCungCapEntities>>(lst);
-                }    
+                }
             }
             catch
             {
@@ -73,10 +81,9 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(NhaCungCapEntities cn)
         {
-            cn.IdnhaCungCap = Guid.NewGuid();
             try
             {
-                using(var dbncc =await this.context.Database.BeginTransactionAsync())
+                using (var dbncc = await this.context.Database.BeginTransactionAsync())
                 {
                     NhaCungCap ncc = new NhaCungCap()
                     {
@@ -98,7 +105,7 @@ namespace APIQuanLyBanHang.Repository
                         MaTrangThai = 1,
                         ThongBao = "Them Thanh Cong"
                     };
-                }    
+                }
             }
             catch
             {
@@ -116,9 +123,9 @@ namespace APIQuanLyBanHang.Repository
             try
             {
                 var ncc = await this.context.NhaCungCaps.FindAsync(id.ToString());
-                if(ncc != null)
+                if (ncc != null)
                 {
-                    return this.mapper.Map<NhaCungCap,NhaCungCapEntities>(ncc);
+                    return this.mapper.Map<NhaCungCap, NhaCungCapEntities>(ncc);
                 }
             }
             catch
@@ -152,7 +159,7 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                using(var dbncc= await this.context.Database.BeginTransactionAsync())
+                using (var dbncc = await this.context.Database.BeginTransactionAsync())
                 {
                     var ncc = await this.context.NhaCungCaps.FirstOrDefaultAsync(h => h.IdnhaCungCap.Equals(id.ToString()));
                     if (ncc != null)
@@ -166,8 +173,8 @@ namespace APIQuanLyBanHang.Repository
                             ThongBao = "Xoa Thanh Cong"
                         };
                     }
-                }    
-                
+                }
+
             }
             catch
             {

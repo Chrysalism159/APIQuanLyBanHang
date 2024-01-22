@@ -1,23 +1,28 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using APIQuanLyBanHang.InterfaceRepo;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using static APIQuanLyBanHang.Helper.TaiKhoanRepository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace APIQuanLyBanHang.Helper
 {
-    public class TaiKhoanRepository : ITaiKhoanRepository
+    public interface ITaiKhoanRepositories
+    {
+        public Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan tt);
+        public Task<string> SignInAsync(QuanLyTaiKhoanDangNhap tt);
+    }
+    public class TaiKhoanRepositories : ITaiKhoanRepositories
     {
         private readonly UserManager<TaiKhoanNguoiDung> userManager;
         private readonly SignInManager<TaiKhoanNguoiDung> signInManager;
         private readonly IConfiguration configuration;
         private readonly RoleManager<IdentityRole> roleManager;
 
-        public TaiKhoanRepository(
+        public TaiKhoanRepositories(
                 UserManager<TaiKhoanNguoiDung> userManager, SignInManager<TaiKhoanNguoiDung> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager
                 )
-            {
+        {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
@@ -25,8 +30,8 @@ namespace APIQuanLyBanHang.Helper
 
         }
 
-            public async Task<string> SignInAsync(QuanLyTaiKhoanDangNhap model)
-            {
+        public async Task<string> SignInAsync(QuanLyTaiKhoanDangNhap model)
+        {
             var user = await userManager.FindByEmailAsync(model.TaiKhoanEmail);
             var passwordValid = await userManager.CheckPasswordAsync(user, model.MatKhau);
 
@@ -60,8 +65,8 @@ namespace APIQuanLyBanHang.Helper
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-            public async Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
-            {
+        public async Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
+        {
             var user = new TaiKhoanNguoiDung
             {
 
@@ -82,6 +87,6 @@ namespace APIQuanLyBanHang.Helper
                 await userManager.AddToRoleAsync(user, QuyenTruyCap.QuanLy);
             }
             return result;
-            }
         }
+    }
 }

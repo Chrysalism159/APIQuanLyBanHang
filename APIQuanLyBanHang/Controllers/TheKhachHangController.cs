@@ -11,13 +11,13 @@ using APIQuanLyBanHang.Entity;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{action}")]
     [ApiController]
     public class TheKhachHangController : ControllerBase
     {
-        private readonly ITheKhachHangRepo _context;
+        private readonly ITheKhachHangRepository _context;
 
-        public TheKhachHangController(ITheKhachHangRepo context)
+        public TheKhachHangController(ITheKhachHangRepository context)
         {
             _context = context;
         }
@@ -44,6 +44,11 @@ namespace APIQuanLyBanHang.Controllers
         public async Task<ActionResult<TrangThai>> ThemThongTin(TheThanhVienEntities kh)
         {
             return await _context.ThemThongTin(kh);
+        }
+        [HttpGet("{name}/{ sdt}")]
+        public async Task<ActionResult<TheThanhVienEntities>> LayMaKhachHang(string name, string sdt)
+        {
+            return await _context.LayMaKhachHang(name, sdt);
         }
         [HttpPut("{id}")]
         public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheThanhVienEntities kh)

@@ -7,8 +7,6 @@
 
         public Guid? IdnhaCungCap { get; set; }
 
-        public Guid? Idanh { get; set; }
-
         public Guid? IdchiNhanh { get; set; }
 
         public string? TenHangNhap { get; set; }

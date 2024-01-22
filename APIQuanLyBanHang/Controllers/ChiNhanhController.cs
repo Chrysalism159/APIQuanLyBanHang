@@ -15,9 +15,9 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class ChiNhanhController : ControllerBase
     {
-        private readonly IChiNhanhRepo context;
+        private readonly IChiNhanhRepository context;
 
-        public ChiNhanhController(IChiNhanhRepo context)
+        public ChiNhanhController(IChiNhanhRepository context)
         {
             this.context = context;
         }

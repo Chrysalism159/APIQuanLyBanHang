@@ -2,11 +2,11 @@
 {
     public class TaiKhoanEntities
     {
-        public Guid IdtaiKhoan { get; set; } 
+        public Guid IdtaiKhoan { get; set; }
 
-        public string? Username { get; set; }
+        public string? TenNguoiDung { get; set; }
 
-        public string? Password { get; set; }
+        public string? MatKhau { get; set; }
 
         public string? PhanQuyen { get; set; }
 

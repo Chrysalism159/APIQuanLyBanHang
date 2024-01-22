@@ -1,19 +1,28 @@
-﻿
-using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
+﻿using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class TheKhachHangRepo : ITheKhachHangRepo
+    public interface ITheKhachHangRepository
+    {
+        public Task<ActionResult<List<TheThanhVienEntities>>> DanhSach();
+        public Task<ActionResult<TheThanhVienEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<List<TheThanhVienEntities>>> TimTheoTen(string name);
+        public Task<ActionResult<TrangThai>> ThemThongTin(TheThanhVienEntities kh);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheThanhVienEntities kh);
+        public Task<ActionResult<TheThanhVienEntities>> LayMaKhachHang(string name, string sdt);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class TheKhachHangRepository : ITheKhachHangRepository
     {
         private readonly QlbdaTtsContext _context;
         private readonly IMapper _map;
 
-        public TheKhachHangRepo(QlbdaTtsContext _context, IMapper map) 
+        public TheKhachHangRepository(QlbdaTtsContext _context, IMapper map)
         {
             this._context = _context;
             this._map = map;
@@ -23,10 +32,10 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                using(var dbtran = await this._context.Database.BeginTransactionAsync()) 
+                using (var dbtran = await this._context.Database.BeginTransactionAsync())
                 {
                     TheThanhVien tt = await _context.FindAsync<TheThanhVien>(id.ToString());
-                    if(tt !=  null)
+                    if (tt != null)
                     {
                         tt.IdloaiThe = kh.IdloaiThe.ToString();
                         tt.TenKhachHang = kh.TenKhachHang;
@@ -38,14 +47,16 @@ namespace APIQuanLyBanHang.Repository
                         tt.SoTienDaSuDung = kh.SoTienDaSuDung;
                         tt.GioiTinh = kh.GioiTinh;
                         tt.DiaChi = kh.DiaChi;
-                        tt.NgaySinh = kh.NgaySinh;
+                        tt.NgaySinh = DateTime.ParseExact(kh.NgaySinh, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                         tt.GhiChu = kh.GhiChu;
                     }
                     await _context.SaveChangesAsync();
                     await dbtran.CommitAsync();
                     return new TrangThai() { MaTrangThai = 1, ThongBao = "Sua thanh cong" };
                 }
-            }catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return new TrangThai() { MaTrangThai = 0, ThongBao = "Sua that bai" };
             }
         }
@@ -53,7 +64,7 @@ namespace APIQuanLyBanHang.Repository
         public async Task<ActionResult<List<TheThanhVienEntities>>> DanhSach()
         {
             List<TheThanhVien> ds = await _context.TheThanhViens.ToListAsync();
-            if(ds != null && ds.Count > 0)
+            if (ds != null && ds.Count > 0)
             {
                 return this._map.Map<List<TheThanhVien>, List<TheThanhVienEntities>>(ds);
             }
@@ -62,12 +73,11 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(TheThanhVienEntities kh)
         {
-            kh.IdtheThanhVien = Guid.NewGuid();
             try
             {
-                using(var dbtran = await this._context.Database.BeginTransactionAsync())
+                using (var dbtran = await this._context.Database.BeginTransactionAsync())
                 {
-                    if(kh != null)
+                    if (kh != null)
                     {
                         TheThanhVien tt = new TheThanhVien()
                         {
@@ -82,7 +92,7 @@ namespace APIQuanLyBanHang.Repository
                             SoTienDaSuDung = kh.SoTienDaSuDung,
                             GioiTinh = kh.GioiTinh,
                             DiaChi = kh.DiaChi,
-                            NgaySinh = kh.NgaySinh,
+                            NgaySinh = DateTime.ParseExact(kh.NgaySinh, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                             GhiChu = kh.GhiChu
                         };
                         _context.Add(tt);
@@ -92,7 +102,8 @@ namespace APIQuanLyBanHang.Repository
                     }
                 }
 
-            }catch(Exception ex) { }
+            }
+            catch (Exception ex) { }
             return new TrangThai() { MaTrangThai = 0, ThongBao = "Them that bai" };
         }
 
@@ -105,10 +116,18 @@ namespace APIQuanLyBanHang.Repository
             }
             return new TheThanhVienEntities();
         }
-
+        public async Task<ActionResult<TheThanhVienEntities>> LayMaKhachHang(string name, string sdt)
+        {
+            TheThanhVien ds = await _context.TheThanhViens.Where(m => m.TenKhachHang.Equals(name) && m.Sdt.Equals(sdt)).FirstOrDefaultAsync();
+            if (ds != null)
+            {
+                return this._map.Map<TheThanhVien, TheThanhVienEntities>(ds);
+            }
+            return new TheThanhVienEntities();
+        }
         public async Task<ActionResult<List<TheThanhVienEntities>>> TimTheoTen(string name)
         {
-            List<TheThanhVien> ds = await _context.TheThanhViens.Where( m=>m.TenKhachHang.Contains(name)).ToListAsync();
+            List<TheThanhVien> ds = await _context.TheThanhViens.Where(m => m.TenKhachHang.Contains(name)).ToListAsync();
             if (ds != null && ds.Count > 0)
             {
                 return this._map.Map<List<TheThanhVien>, List<TheThanhVienEntities>>(ds);
@@ -116,16 +135,36 @@ namespace APIQuanLyBanHang.Repository
             return new List<TheThanhVienEntities>();
         }
 
-        public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id) 
+        public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
-            TheThanhVien tt = await _context.TheThanhViens.FindAsync(id.ToString());
-            if(tt != null)
+            try
             {
-                _context.TheThanhViens.Remove(tt);
-                _context.SaveChangesAsync();
-                return new TrangThai() { MaTrangThai=1, ThongBao="Xoa thanh cong!"};
+                var sp = await this._context.TheThanhViens.FindAsync(id.ToString());
+                using (var dbsp = await this._context.Database.BeginTransactionAsync())
+                {
+                    if (sp != null)
+                    {
+                        this._context.Remove(sp);
+                        await this._context.SaveChangesAsync();
+                        await dbsp.CommitAsync();
+                        return new TrangThai()
+                        {
+                            MaTrangThai = 1,
+                            ThongBao = "Xoa Thanh Cong"
+                        };
+                    }
+
+                }
             }
-            return new TrangThai() { MaTrangThai = 0, ThongBao = "Xoa that bai!" };
+            catch
+            {
+
+            }
+            return new TrangThai()
+            {
+                MaTrangThai = 0,
+                ThongBao = "Xoa That Bai "
+            };
         }
     }
 }

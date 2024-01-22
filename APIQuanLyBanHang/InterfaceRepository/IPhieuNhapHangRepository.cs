@@ -1,17 +1,25 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class PhieuNhapHangRepo : IPhieuNhapHangRepo
+    public interface IPhieuNhapHangRepository
+    {
+        public Task<ActionResult<List<PhieuNhapHangEntities>>> DanhSach();
+        public Task<ActionResult<PhieuNhapHangEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<List<PhieuNhapHangEntities>>> TimTheoTen(string name);
+        public Task<ActionResult<TrangThai>> ThemThongTin(PhieuNhapHangEntities kh);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, PhieuNhapHangEntities kh);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class PhieuNhapHangRepository : IPhieuNhapHangRepository
     {
         private readonly QlbdaTtsContext context;
         private readonly IMapper mapper;
-        public PhieuNhapHangRepo(QlbdaTtsContext context,IMapper mapper)
+        public PhieuNhapHangRepository(QlbdaTtsContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -20,15 +28,14 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var pnh=await this.context.PhieuNhapHangs.FirstOrDefaultAsync(h=>h.IdphieuNhapHang.Equals(id.ToString()));
-                using (var dbnh= await this.context.Database.BeginTransactionAsync())
+                var pnh = await this.context.PhieuNhapHangs.FirstOrDefaultAsync(h => h.IdphieuNhapHang.Equals(id.ToString()));
+                using (var dbnh = await this.context.Database.BeginTransactionAsync())
                 {
                     if (pnh != null)
                     {
                         pnh.IdnhanVien = kh.IdnhanVien.ToString();
                         pnh.IdnhaCungCap = kh.IdnhaCungCap.ToString();
                         pnh.IdchiNhanh = kh.IdchiNhanh.ToString();
-                        pnh.Idanh = kh.Idanh.ToString();
                         pnh.TenHangNhap = kh.TenHangNhap;
                         pnh.ChietKhau = kh.ChietKhau;
                         pnh.TongTienSauChietKhau = kh.TongTienSauChietKhau;
@@ -44,7 +51,7 @@ namespace APIQuanLyBanHang.Repository
                         };
                     }
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -62,11 +69,11 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                List<PhieuNhapHang>lst=await this.context.PhieuNhapHangs.ToListAsync();
-                if(lst.Count>0&&lst!=null)
+                List<PhieuNhapHang> lst = await this.context.PhieuNhapHangs.ToListAsync();
+                if (lst.Count > 0 && lst != null)
                 {
-                    return this.mapper.Map<List<PhieuNhapHang>,List<PhieuNhapHangEntities>>(lst);
-                }    
+                    return this.mapper.Map<List<PhieuNhapHang>, List<PhieuNhapHangEntities>>(lst);
+                }
 
             }
             catch
@@ -82,9 +89,9 @@ namespace APIQuanLyBanHang.Repository
             try
             {
 
-                using(var dbpn=await this.context.Database.BeginTransactionAsync())
+                using (var dbpn = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(kh!=null)
+                    if (kh != null)
                     {
                         PhieuNhapHang phieuNhapHang = new PhieuNhapHang()
                         {
@@ -92,7 +99,6 @@ namespace APIQuanLyBanHang.Repository
                             IdnhanVien = kh.IdnhanVien.ToString(),
                             IdnhaCungCap = kh.IdnhaCungCap.ToString(),
                             IdchiNhanh = kh.IdchiNhanh.ToString(),
-                            Idanh = kh.Idanh.ToString(),
                             TenHangNhap = kh.TenHangNhap,
                             ChietKhau = kh.ChietKhau,
                             TongTienSauChietKhau = kh.TongTienSauChietKhau,
@@ -125,44 +131,45 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var ph=await context.PhieuNhapHangs.FindAsync(id.ToString());
-                if(ph!=null)
+                var ph = await context.PhieuNhapHangs.FindAsync(id.ToString());
+                if (ph != null)
                 {
                     return this.mapper.Map<PhieuNhapHang, PhieuNhapHangEntities>(ph);
-                }    
+                }
             }
             catch
             {
 
             }
-            return new PhieuNhapHangEntities(){ };
+            return new PhieuNhapHangEntities() { };
         }
 
         public async Task<ActionResult<List<PhieuNhapHangEntities>>> TimTheoTen(string name)
         {
             try
             {
-                List<PhieuNhapHang> lst=await context.PhieuNhapHangs.Where(h=>h.TenHangNhap.Contains(name)).ToListAsync();
-                if(lst!=null&&lst.Count>0)
+                List<PhieuNhapHang> lst = await context.PhieuNhapHangs.Where(h => h.TenHangNhap.Contains(name)).ToListAsync();
+                if (lst != null && lst.Count > 0)
                 {
-                    return this.mapper.Map<List<PhieuNhapHang>,List<PhieuNhapHangEntities>>(lst);
-                }    
+                    return this.mapper.Map<List<PhieuNhapHang>, List<PhieuNhapHangEntities>>(lst);
+                }
 
             }
             catch
             {
 
             }
-            return new  List<PhieuNhapHangEntities>() { }; 
+            return new List<PhieuNhapHangEntities>() { };
         }
 
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
-           try
+            try
             {
-              
-                using(var dbph= await this.context.Database.BeginTransactionAsync())
-                {  var Ph = await context.PhieuNhapHangs.FirstOrDefaultAsync(h=>h.IdphieuNhapHang.Equals(id.ToString()));
+
+                using (var dbph = await this.context.Database.BeginTransactionAsync())
+                {
+                    var Ph = await context.PhieuNhapHangs.FirstOrDefaultAsync(h => h.IdphieuNhapHang.Equals(id.ToString()));
                     if (Ph != null)
                     {
                         context.PhieuNhapHangs.Remove(Ph);
@@ -175,7 +182,7 @@ namespace APIQuanLyBanHang.Repository
                         };
                     }
                 }
-               
+
             }
             catch
             {

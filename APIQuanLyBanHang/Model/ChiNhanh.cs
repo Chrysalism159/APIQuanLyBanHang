@@ -13,6 +13,8 @@ public partial class ChiNhanh
 
     public string? GhiChu { get; set; }
 
+    public string? SoDienThoai { get; set; }
+
     public virtual ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
 
     public virtual ICollection<NhanVien> NhanViens { get; set; } = new List<NhanVien>();

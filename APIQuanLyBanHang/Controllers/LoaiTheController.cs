@@ -10,9 +10,9 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class LoaiTheController : ControllerBase
     {
-        private readonly ILoaiTheRepo _context;
+        private readonly ILoaiTheRepository _context;
 
-        public LoaiTheController(ILoaiTheRepo _context) 
+        public LoaiTheController(ILoaiTheRepository _context) 
         {
             this._context = _context;
         }

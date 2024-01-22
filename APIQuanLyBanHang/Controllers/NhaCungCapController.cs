@@ -9,8 +9,8 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class NhaCungCapController : ControllerBase
     {
-        private readonly INhaCungCapRepo context;
-        public NhaCungCapController(INhaCungCapRepo context)
+        private readonly INhaCungCapRepository context;
+        public NhaCungCapController(INhaCungCapRepository context)
         {
             this.context = context;
         }
@@ -34,12 +34,12 @@ namespace APIQuanLyBanHang.Controllers
         {
             return await context.ThemThongTin(nc);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<TrangThai>>CapNhatThongTin(Guid id, NhaCungCapEntities nc)
         {
             return await context.CapNhatThongTin(id,nc);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<TrangThai>>XoaThongTin(Guid id)
         {
             return await context.XoaThongTin(id);

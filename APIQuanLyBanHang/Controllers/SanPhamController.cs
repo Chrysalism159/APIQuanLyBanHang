@@ -9,9 +9,9 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class SanPhamController : ControllerBase
     {
-        private readonly ISanPhamRepo _repo;
+        private readonly ISanPhamRepository _repo;
 
-        public SanPhamController(ISanPhamRepo repo) 
+        public SanPhamController(ISanPhamRepository repo) 
         {
             this._repo = repo;
         }
@@ -35,13 +35,13 @@ namespace APIQuanLyBanHang.Controllers
         {
             return await _repo.ThemThongTin(kh);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<TrangThai>>CapNhatThongTin(Guid id,SanPhamEntities kh)
 
         {
             return await _repo.CapNhatThongTin(id,kh);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<TrangThai>>XoaThongTin(Guid id)
         {
             return await _repo.XoaThongTin(id);

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using APIQuanLyBanHang.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : DbContext
+public partial class QlbdaTtsContext : IdentityScaffordContext
 {
-    public QlbdaTtsContext()
-    {
-    }
-
     public QlbdaTtsContext(DbContextOptions<QlbdaTtsContext> options)
         : base(options)
     {
@@ -55,10 +53,22 @@ public partial class QlbdaTtsContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Data Source=CHRYSALISM\\SQLEXPRESS;Initial Catalog=QLBDA_TTS;Integrated Security=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+        {
+            entity.HasNoKey();
+        });
         modelBuilder.Entity<Anh>(entity =>
         {
             entity.HasKey(e => e.Idanh);
@@ -131,18 +141,12 @@ public partial class QlbdaTtsContext : DbContext
 
             entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
 
-            entity.Property(e => e.LoginProvider).HasMaxLength(128);
-            entity.Property(e => e.ProviderKey).HasMaxLength(128);
-
             entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
         });
 
         modelBuilder.Entity<AspNetUserToken>(entity =>
         {
             entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-            entity.Property(e => e.LoginProvider).HasMaxLength(128);
-            entity.Property(e => e.Name).HasMaxLength(128);
 
             entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
         });
@@ -159,6 +163,7 @@ public partial class QlbdaTtsContext : DbContext
                 .HasColumnName("IDChiNhanh");
             entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.GhiChu).HasMaxLength(50);
+            entity.Property(e => e.SoDienThoai).HasMaxLength(50);
             entity.Property(e => e.TenChiNhanh).HasMaxLength(50);
         });
 
@@ -292,6 +297,7 @@ public partial class QlbdaTtsContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CCCD");
+            entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -312,7 +318,6 @@ public partial class QlbdaTtsContext : DbContext
                 .HasColumnName("SDT");
             entity.Property(e => e.TenNhanVien).HasMaxLength(50);
             entity.Property(e => e.TrangThai).HasMaxLength(50);
-            entity.Property(e => e.ĐiaChi).HasMaxLength(50);
 
             entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.NhanViens)
                 .HasForeignKey(d => d.IdchiNhanh)
@@ -369,10 +374,6 @@ public partial class QlbdaTtsContext : DbContext
                 .HasColumnName("IDPhieuNhapHang");
             entity.Property(e => e.ChietKhau).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.GhiChu).HasMaxLength(50);
-            entity.Property(e => e.Idanh)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDAnh");
             entity.Property(e => e.IdchiNhanh)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -389,10 +390,6 @@ public partial class QlbdaTtsContext : DbContext
             entity.Property(e => e.ThoiGianLapHoaDon).HasColumnType("datetime");
             entity.Property(e => e.TongTienSauChietKhau).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TongTienThanhToan).HasColumnType("decimal(18, 0)");
-
-            entity.HasOne(d => d.IdanhNavigation).WithMany(p => p.PhieuNhapHangs)
-                .HasForeignKey(d => d.Idanh)
-                .HasConstraintName("FK_PhieuNhapHang_Anh");
 
             entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.PhieuNhapHangs)
                 .HasForeignKey(d => d.IdchiNhanh)
@@ -435,27 +432,20 @@ public partial class QlbdaTtsContext : DbContext
 
         modelBuilder.Entity<SanPhamChiNhanh>(entity =>
         {
-            entity.HasKey(e => new { e.IdsanPham, e.IdchiNhanh });
+            entity.HasKey(e => new { e.IdchiNhanh, e.IdsanPham });
 
-            entity.ToTable("SanPhamChiNhanh");
+            entity.HasIndex(e => e.IdsanPham, "IX_SanPhamChiNhanhs_IdsanPham");
 
-            entity.Property(e => e.IdsanPham)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDSanPham");
             entity.Property(e => e.IdchiNhanh)
                 .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDChiNhanh");
-            entity.Property(e => e.GhiChu).HasMaxLength(50);
+                .IsUnicode(false);
+            entity.Property(e => e.IdsanPham)
+                .HasMaxLength(50)
+                .IsUnicode(false);
 
-            entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.SanPhamChiNhanhs)
-                .HasForeignKey(d => d.IdchiNhanh)
-                .HasConstraintName("FK_SanPhamChiNhanh_ChiNhanh");
+            entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.SanPhamChiNhanhs).HasForeignKey(d => d.IdchiNhanh);
 
-            entity.HasOne(d => d.IdsanPhamNavigation).WithMany(p => p.SanPhamChiNhanhs)
-                .HasForeignKey(d => d.IdsanPham)
-                .HasConstraintName("FK_SanPhamChiNhanh_SanPham");
+            entity.HasOne(d => d.IdsanPhamNavigation).WithMany(p => p.SanPhamChiNhanhs).HasForeignKey(d => d.IdsanPham);
         });
 
         modelBuilder.Entity<TaiKhoan>(entity =>
@@ -469,9 +459,9 @@ public partial class QlbdaTtsContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("IDTaiKhoan");
             entity.Property(e => e.GhiChu).HasMaxLength(50);
-            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.MatKhau).HasMaxLength(50);
             entity.Property(e => e.PhanQuyen).HasMaxLength(50);
-            entity.Property(e => e.Username).HasMaxLength(50);
+            entity.Property(e => e.TenNguoiDung).HasMaxLength(50);
         });
 
         modelBuilder.Entity<TheThanhVien>(entity =>

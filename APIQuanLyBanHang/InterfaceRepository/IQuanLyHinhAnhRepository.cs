@@ -1,11 +1,13 @@
-﻿using APIQuanLyBanHang.InterfaceRepo;
-
-namespace APIQuanLyBanHang.Repository
+﻿namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class QuanLyHinhAnhRepo : IQuanLyHinhAnhRepo
+    public interface IQuanLyHinhAnhRepository
+    {
+        public Tuple<int, string> TaiHinhAnh(IFormFile imageFile);
+    }
+    public class QuanLyHinhAnhRepository : IQuanLyHinhAnhRepository
     {
         private IWebHostEnvironment environment;
-        public QuanLyHinhAnhRepo(IWebHostEnvironment env)
+        public QuanLyHinhAnhRepository(IWebHostEnvironment env)
         {
             this.environment = env;
         }

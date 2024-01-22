@@ -1,17 +1,26 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class ChiTietHoaDonRepo : IChiTietHoaDonRepo
+    public interface IChiTietHoaDonRepository
+    {
+        public Task<ActionResult<List<ChiTietHoaDonEntities>>> DanhSach();
+        public Task<ActionResult<ChiTietHoaDonEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<List<ChiTietHoaDonEntities>>> TimTheoIDSanPham(Guid idsp);
+        public Task<ActionResult<List<ChiTietHoaDonEntities>>> TimTheoIDHoaDon(Guid idsp);
+        public Task<ActionResult<TrangThai>> ThemThongTin(ChiTietHoaDonEntities cthd);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, ChiTietHoaDonEntities cthd);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class ChiTietHoaDonRepository : IChiTietHoaDonRepository
     {
         private readonly QlbdaTtsContext context;
         private readonly IMapper mapper;
-        public  ChiTietHoaDonRepo(QlbdaTtsContext context,IMapper mapper)
+        public ChiTietHoaDonRepository(QlbdaTtsContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -20,18 +29,18 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var hd=await this.context.ChiTietHoaDons.FindAsync(id.ToString());
-                using(var dbcthd=await this.context.Database.BeginTransactionAsync())
+                var hd = await this.context.ChiTietHoaDons.FindAsync(id.ToString());
+                using (var dbcthd = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(hd!=null)
+                    if (hd != null)
                     {
-                        hd.ThanhTien=cthd.ThanhTien;
+                        hd.ThanhTien = cthd.ThanhTien;
                         hd.IdhoaDon = cthd.IdhoaDon.ToString();
                         hd.IdsanPham = cthd.IdsanPham.ToString();
-                        hd.IdphieuNhapHang=cthd.IdphieuNhapHang.ToString();
+                        hd.IdphieuNhapHang = cthd.IdphieuNhapHang.ToString();
                         hd.ChietKhau = cthd.ChietKhau;
                         hd.SoLuong = cthd.SoLuong;
-                        hd.Dongia=cthd.Dongia;
+                        hd.Dongia = cthd.Dongia;
                         hd.ThanhTien = cthd.ThanhTien;
                         hd.GhiChu = cthd.GhiChu;
 
@@ -44,7 +53,7 @@ namespace APIQuanLyBanHang.Repository
                         };
 
                     }
-                }    
+                }
             }
             catch
             { }
@@ -60,10 +69,10 @@ namespace APIQuanLyBanHang.Repository
             try
             {
                 List<ChiTietHoaDon> lst = await this.context.ChiTietHoaDons.ToListAsync();
-                if(lst.Count>0&&lst!=null)
+                if (lst.Count > 0 && lst != null)
                 {
                     return this.mapper.Map<List<ChiTietHoaDon>, List<ChiTietHoaDonEntities>>(lst);
-                }    
+                }
 
             }
             catch
@@ -75,16 +84,16 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(ChiTietHoaDonEntities cthd)
         {
-            cthd.IdchiTietHoaDon=Guid.NewGuid();
+            cthd.IdchiTietHoaDon = Guid.NewGuid();
             try
             {
-                using(var dbcthd=await this.context.Database.BeginTransactionAsync()) 
+                using (var dbcthd = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(cthd!=null)
+                    if (cthd != null)
                     {
                         ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon
                         {
-                            IdchiTietHoaDon=cthd.IdchiTietHoaDon.ToString(),
+                            IdchiTietHoaDon = cthd.IdchiTietHoaDon.ToString(),
                             IdhoaDon = cthd.IdhoaDon.ToString(),
                             IdsanPham = cthd.IdsanPham.ToString(),
                             IdphieuNhapHang = cthd.IdphieuNhapHang.ToString(),
@@ -103,17 +112,17 @@ namespace APIQuanLyBanHang.Repository
                             ThongBao = "Them Thanh Cong"
 
                         };
-                    }    
-                  
+                    }
+
                 }
             }
             catch { }
-             return new TrangThai()
-              {
-                  MaTrangThai = 0,
-                  ThongBao = "Them That Bai "
+            return new TrangThai()
+            {
+                MaTrangThai = 0,
+                ThongBao = "Them That Bai "
 
-              };
+            };
 
         }
 
@@ -121,45 +130,77 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var hd=await this.context.ChiTietHoaDons.FirstOrDefaultAsync(h=>h.IdchiTietHoaDon.Equals(id.ToString()));
-                if(hd!=null)
+                var hd = await this.context.ChiTietHoaDons.FirstOrDefaultAsync(h => h.IdchiTietHoaDon.Equals(id.ToString()));
+                if (hd != null)
                 {
                     return this.mapper.Map<ChiTietHoaDon, ChiTietHoaDonEntities>(hd);
-                }    
+                }
 
             }
             catch { }
-            return new ChiTietHoaDonEntities() { }; 
+            return new ChiTietHoaDonEntities() { };
 
         }
+
+        public async Task<ActionResult<List<ChiTietHoaDonEntities>>> TimTheoIDHoaDon(Guid idsp)
+        {
+            try
+            {
+                List<ChiTietHoaDon> lst = await this.context.ChiTietHoaDons.Where(h => h.IdhoaDon == idsp.ToString()).ToListAsync();
+                if (lst != null && lst.Count > 0)
+                {
+                    return this.mapper.Map<List<ChiTietHoaDon>, List<ChiTietHoaDonEntities>>(lst);
+                }
+            }
+            catch
+            {
+
+            }
+            return new List<ChiTietHoaDonEntities>() { };
+        }
+
+        //public async Task<ActionResult<ChiTietHoaDonEntities>> TimHoaDonTheoIDSanPham(Guid id)
+        //{
+        //    try
+        //    {
+        //        var hd = await this.context.ChiTietHoaDons.FirstOrDefaultAsync(h => h.IdsanPham.Equals(id.ToString()));
+        //        if (hd != null)
+        //        {
+        //            return this.mapper.Map<ChiTietHoaDon, ChiTietHoaDonEntities>(hd);
+        //        }
+
+        //    }
+        //    catch { }
+        //    return new ChiTietHoaDonEntities() { };
+        //}
 
         public async Task<ActionResult<List<ChiTietHoaDonEntities>>> TimTheoIDSanPham(Guid idsp)
         {
             try
             {
                 List<ChiTietHoaDon> lst = await this.context.ChiTietHoaDons.Where(h => h.IdsanPham == idsp.ToString()).ToListAsync();
-                if(lst!=null&&lst.Count>0)
+                if (lst != null && lst.Count > 0)
                 {
-                    return  this.mapper.Map<List<ChiTietHoaDon>,List<ChiTietHoaDonEntities>>(lst);
-                }    
+                    return this.mapper.Map<List<ChiTietHoaDon>, List<ChiTietHoaDonEntities>>(lst);
+                }
             }
             catch
             {
 
             }
-            return new List<ChiTietHoaDonEntities>(){ };
+            return new List<ChiTietHoaDonEntities>() { };
         }
 
-      
+
 
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
             try
             {
-                var hd=await this.context.ChiTietHoaDons.FindAsync(id.ToString());
-                using(var dbhd=await this.context.Database.BeginTransactionAsync())
+                var hd = await this.context.ChiTietHoaDons.FindAsync(id.ToString());
+                using (var dbhd = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(hd!=null)
+                    if (hd != null)
                     {
                         context.Remove(hd);
                         await this.context.SaveChangesAsync();
@@ -169,8 +210,8 @@ namespace APIQuanLyBanHang.Repository
                             MaTrangThai = 1,
                             ThongBao = "Xoa Thanh Cong"
                         };
-                    }    
-                }    
+                    }
+                }
             }
             catch
             {

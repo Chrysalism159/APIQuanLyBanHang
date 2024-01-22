@@ -13,17 +13,17 @@
 
         public string? Sdt { get; set; }
 
-        public DateTime? NgayBatDauLamViec { get; set; }
+        public string? NgayBatDauLamViec { get; set; }
 
         public string? Cccd { get; set; }
 
-        public DateTime? NgaySinh { get; set; }
+        public string? NgaySinh { get; set; }
 
         public bool? GioiTinh { get; set; }
 
         public string? Email { get; set; }
 
-        public string? ĐiaChi { get; set; }
+        public string? DiaChi { get; set; }
 
         public string? TrangThai { get; set; }
 

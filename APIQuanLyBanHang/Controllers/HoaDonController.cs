@@ -10,14 +10,14 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class HoaDonController : ControllerBase
     {
-        private readonly IHoaDonRepo _context;
+        private readonly IHoaDonRepository _context;
 
-        public HoaDonController(IHoaDonRepo _context)
+        public HoaDonController(IHoaDonRepository _context)
         {
             this._context = _context;
         }
         [HttpGet]
-        [Authorize(Roles = "NhanVien")]
+        //[Authorize(Roles = "NhanVien")]
         public async Task<ActionResult<List<HoaDonEntities>>> DanhSach()
         {
             return await _context.DanhSach();

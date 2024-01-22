@@ -1,17 +1,25 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class ChiNhanhRepo : IChiNhanhRepo
+    public interface IChiNhanhRepository
+    {
+        public Task<ActionResult<List<ChiNhanhEntities>>> DanhSach();
+        public Task<ActionResult<ChiNhanhEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<List<ChiNhanhEntities>>> TimTheoTen(string name);
+        public Task<ActionResult<TrangThai>> ThemThongTin(ChiNhanhEntities cn);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id,ChiNhanhEntities cn);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class ChiNhanhRepository : IChiNhanhRepository
     {
         private readonly QlbdaTtsContext context;
         private readonly IMapper mapper;
-        public ChiNhanhRepo(QlbdaTtsContext context, IMapper mapper)
+        public ChiNhanhRepository(QlbdaTtsContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
@@ -23,9 +31,10 @@ namespace APIQuanLyBanHang.Repository
             {
                 using (var dbcn = await this.context.Database.BeginTransactionAsync())
                 {
-                    var chinhanhcu = await context.ChiNhanhs.FindAsync(id);
-                    if(chinhanhcu!=null)
+                    var chinhanhcu = await context.ChiNhanhs.FindAsync(id.ToString());
+                    if (chinhanhcu != null)
                     {
+                        chinhanhcu.SoDienThoai = cn.SoDienThoai;
                         chinhanhcu.TenChiNhanh = cn.TenChiNhanh;
                         chinhanhcu.DiaChi = cn.DiaChi;
                         chinhanhcu.GhiChu = cn.GhiChu;
@@ -37,8 +46,8 @@ namespace APIQuanLyBanHang.Repository
                             MaTrangThai = 1,
                             ThongBao = "Cap Nhat Thanh Cong"
                         };
-                    }    
-                }    
+                    }
+                }
             }
             catch (Exception ex) { }
             return new TrangThai()
@@ -53,10 +62,10 @@ namespace APIQuanLyBanHang.Repository
             try
             {
                 List<ChiNhanh> lst = await context.ChiNhanhs.ToListAsync();
-                if(lst!=null&&lst.Count>0)
+                if (lst != null && lst.Count > 0)
                 {
                     return this.mapper.Map<List<ChiNhanh>, List<ChiNhanhEntities>>(lst);
-                }    
+                }
             }
             catch
             {
@@ -70,9 +79,9 @@ namespace APIQuanLyBanHang.Repository
             cn.IdchiNhanh = Guid.NewGuid();
             try
             {
-                using(var dbcn=await this.context.Database.BeginTransactionAsync())
+                using (var dbcn = await this.context.Database.BeginTransactionAsync())
                 {
-                    if(cn!=null)
+                    if (cn != null)
                     {
                         ChiNhanh chiNhanh = new ChiNhanh
                         {
@@ -80,6 +89,7 @@ namespace APIQuanLyBanHang.Repository
                             TenChiNhanh = cn.TenChiNhanh,
                             DiaChi = cn.DiaChi,
                             GhiChu = cn.GhiChu,
+                            SoDienThoai = cn.SoDienThoai
                         };
                         await context.ChiNhanhs.AddAsync(chiNhanh);
                         await context.SaveChangesAsync();
@@ -90,9 +100,9 @@ namespace APIQuanLyBanHang.Repository
                             ThongBao = "Them Thanh Cong"
                         };
 
-                    }    
-                }    
-               
+                    }
+                }
+
             }
             catch
             {
@@ -109,11 +119,11 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                ChiNhanh chiNhanh=await context.ChiNhanhs.FirstOrDefaultAsync(h=>h.IdchiNhanh.Equals(id));
-                if(chiNhanh!=null)
+                ChiNhanh chiNhanh = await context.ChiNhanhs.FirstOrDefaultAsync(h => h.IdchiNhanh.Equals(id.ToString()));
+                if (chiNhanh != null)
                 {
-                    return  this.mapper.Map<ChiNhanh,ChiNhanhEntities>(chiNhanh);
-                }    
+                    return this.mapper.Map<ChiNhanh, ChiNhanhEntities>(chiNhanh);
+                }
             }
             catch { }
             return new ChiNhanhEntities() { };
@@ -123,29 +133,29 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                List<ChiNhanh> lst = await context.ChiNhanhs.Where(h=>h.TenChiNhanh.Contains(ten)).ToListAsync();
-                if(lst!=null&&lst.Count>0)
+                List<ChiNhanh> lst = await context.ChiNhanhs.Where(h => h.TenChiNhanh.Contains(ten)).ToListAsync();
+                if (lst != null && lst.Count > 0)
                 {
-                    return this.mapper.Map<List<ChiNhanh>,List<ChiNhanhEntities>>(lst);
-                }    
+                    return this.mapper.Map<List<ChiNhanh>, List<ChiNhanhEntities>>(lst);
+                }
 
             }
             catch
             { }
             return new List<ChiNhanhEntities>() { };
-        
+
         }
 
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {
             try
             {
-                using(var dbcn=await this.context.Database.BeginTransactionAsync())
+                using (var dbcn = await this.context.Database.BeginTransactionAsync())
                 {
-                    var ChiNhanh = await context.ChiNhanhs.FirstOrDefaultAsync(h=>h.IdchiNhanh.Equals(id.ToString()));
-                    if(ChiNhanh!=null)
+                    var ChiNhanh = await context.ChiNhanhs.FirstOrDefaultAsync(h => h.IdchiNhanh.Equals(id.ToString()));
+                    if (ChiNhanh != null)
                     {
-                         context.Remove(ChiNhanh);
+                        context.Remove(ChiNhanh);
                         await context.SaveChangesAsync();
                         await dbcn.CommitAsync();
                         return new TrangThai()
@@ -153,9 +163,9 @@ namespace APIQuanLyBanHang.Repository
                             MaTrangThai = 1,
                             ThongBao = "Xoa Thanh Cong"
                         };
-                    }    
-                }    
-                
+                    }
+                }
+
             }
             catch
             {

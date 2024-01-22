@@ -1,25 +1,32 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class AnhRepo : IAnhRepo
+    public interface IAnhRepository
+    {
+        public Task<ActionResult<List<AnhEntities>>> DanhSach();
+        public Task<ActionResult<AnhEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<TrangThai>> ThemThongTin(AnhEntities kh);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, AnhEntities kh);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class AnhRepository : IAnhRepository
     {
         private readonly QlbdaTtsContext _context;
         private readonly IMapper _map;
-        private readonly IQuanLyHinhAnhRepo _repo;
+        private readonly IQuanLyHinhAnhRepository _repo;
 
-        public AnhRepo(QlbdaTtsContext _context, IMapper map, IQuanLyHinhAnhRepo imgrepo) 
+        public AnhRepository(QlbdaTtsContext _context, IMapper map, IQuanLyHinhAnhRepository imgrepo)
         {
             this._context = _context;
             this._map = map;
             this._repo = imgrepo;
         }
-        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, AnhEntities kh)
+        public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, [FromForm] AnhEntities kh)
         {
             try
             {
@@ -72,15 +79,15 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                using(var dbtran = await _context.Database.BeginTransactionAsync())
+                using (var dbtran = await _context.Database.BeginTransactionAsync())
                 {
-                    if(kh!= null)
+                    if (kh != null)
                     {
-                        
-                        if(kh.file != null)
+
+                        if (kh.file != null)
                         {
                             var result = _repo.TaiHinhAnh(kh.file);
-                            if(result.Item1 == 1)
+                            if (result.Item1 == 1)
                             {
                                 kh.FileAnh = result.Item2;
                             }
@@ -99,7 +106,8 @@ namespace APIQuanLyBanHang.Repository
                     }
                 }
 
-            }catch (Exception ex) { }
+            }
+            catch (Exception ex) { }
             return new TrangThai() { MaTrangThai = 0, ThongBao = "Them that bai" };
         }
 
@@ -113,7 +121,7 @@ namespace APIQuanLyBanHang.Repository
             return new AnhEntities();
         }
 
-        
+
 
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {

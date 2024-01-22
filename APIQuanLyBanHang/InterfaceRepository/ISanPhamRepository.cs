@@ -1,24 +1,32 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class SanPhamRepo : ISanPhamRepo
+    public interface ISanPhamRepository
+    {
+        public Task<ActionResult<List<SanPhamEntities>>> DanhSach();
+        public Task<ActionResult<SanPhamEntities>> TimTheoID(Guid id);
+        public Task<ActionResult<List<SanPhamEntities>>> TimTheoTen(string name);
+        public Task<ActionResult<TrangThai>> ThemThongTin(SanPhamEntities kh);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, SanPhamEntities kh);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+    }
+    public class SanPhamRepository : ISanPhamRepository
     {
         private readonly QlbdaTtsContext _context;
         private readonly IMapper _map;
-        private readonly IAnhRepo _repo;
+        private readonly IAnhRepository _repo;
 
-        public SanPhamRepo(QlbdaTtsContext context, IMapper map, IAnhRepo repo) 
+        public SanPhamRepository(QlbdaTtsContext context, IMapper map, IAnhRepository repo)
         {
             this._context = context;
             this._map = map;
             this._repo = repo;
-        }    
+        }
         public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, SanPhamEntities kh)
         {
             try
@@ -52,8 +60,8 @@ namespace APIQuanLyBanHang.Repository
 
         public async Task<ActionResult<List<SanPhamEntities>>> DanhSach()
         {
-            var sp = await _context.SanPhams.Include(m=>m.IdanhNavigation).ToListAsync();
-                if(sp != null && sp.Count > 0)
+            var sp = await _context.SanPhams.Include(m => m.IdanhNavigation).ToListAsync();
+            if (sp != null && sp.Count > 0)
             {
                 return this._map.Map<List<SanPham>, List<SanPhamEntities>>(sp);
             }
@@ -79,7 +87,7 @@ namespace APIQuanLyBanHang.Repository
                         SoLuongHienCo = kh.SoLuongHienCo,
                         GhiChu = kh.GhiChu
                     };
-                    
+
                     await _context.AddAsync(tt);
                     await _context.SaveChangesAsync();
                     await dbtran.CommitAsync();
@@ -98,11 +106,11 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                var sp= await this._context.SanPhams.FirstOrDefaultAsync(h=>h.IdsanPham.Equals(id.ToString()));
-                if(sp!=null)
+                var sp = await this._context.SanPhams.FirstOrDefaultAsync(h => h.IdsanPham.Equals(id.ToString()));
+                if (sp != null)
                 {
                     return this._map.Map<SanPhamEntities>(sp);
-                }    
+                }
 
             }
             catch
@@ -116,11 +124,11 @@ namespace APIQuanLyBanHang.Repository
         {
             try
             {
-                List<SanPham>lst= await this._context.SanPhams.Where(h=>h.TenSanPham.Contains(name)).ToListAsync();
-                if(lst.Count>0&&lst!=null)
+                List<SanPham> lst = await this._context.SanPhams.Where(h => h.TenSanPham.Contains(name)).ToListAsync();
+                if (lst.Count > 0 && lst != null)
                 {
-                    return  this._map.Map<List<SanPham>, List<SanPhamEntities>>(lst);
-                }    
+                    return this._map.Map<List<SanPham>, List<SanPhamEntities>>(lst);
+                }
             }
             catch
             {
@@ -134,9 +142,9 @@ namespace APIQuanLyBanHang.Repository
             try
             {
                 var sp = await this._context.SanPhams.FindAsync(id.ToString());
-                using(var dbsp= await this._context.Database.BeginTransactionAsync())
+                using (var dbsp = await this._context.Database.BeginTransactionAsync())
                 {
-                    if(sp!=null)
+                    if (sp != null)
                     {
                         this._context.Remove(sp);
                         await this._context.SaveChangesAsync();
@@ -146,9 +154,9 @@ namespace APIQuanLyBanHang.Repository
                             MaTrangThai = 1,
                             ThongBao = "Xoa Thanh Cong"
                         };
-                    }    
+                    }
 
-                }    
+                }
             }
             catch
             {

@@ -10,7 +10,7 @@
 
         public Guid? IdtheThanhVien { get; set; }
 
-        public DateTime? NgayLapHoaDon { get; set; }
+        public string? NgayLapHoaDon { get; set; }
 
         public decimal? SoTienKhachTra { get; set; }
 
@@ -18,6 +18,5 @@
 
         public string? GhiChu { get; set; }
 
-        public List<ChiTietHoaDonEntities>? ChiTietHD{ get; set; }
     }
 }

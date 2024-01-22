@@ -9,9 +9,9 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class TaiKhoanController : ControllerBase
     {
-        private readonly ITaiKhoanRepository account;
+        private readonly ITaiKhoanRepositories account;
 
-        public TaiKhoanController(ITaiKhoanRepository acc)
+        public TaiKhoanController(ITaiKhoanRepositories acc)
         {
             this.account = acc;
         }

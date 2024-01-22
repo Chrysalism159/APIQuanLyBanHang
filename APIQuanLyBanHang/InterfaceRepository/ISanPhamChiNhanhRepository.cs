@@ -1,17 +1,24 @@
 ﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.InterfaceRepo;
 using APIQuanLyBanHang.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace APIQuanLyBanHang.Repository
+namespace APIQuanLyBanHang.InterfaceRepo
 {
-    public class SanPhamChiNhanhRepo : ISanPhamChiNhanhRepo
+    public interface ISanPhamChiNhanhRepository
+    {
+        public Task<ActionResult<List<SanPhamChiNhanhEntities>>> DanhSach();
+        public Task<ActionResult<SanPhamChiNhanhEntities>> TimTheoID(Guid idsp, Guid idcn);
+        public Task<ActionResult<TrangThai>> ThemThongTin(SanPhamChiNhanhEntities spcn);
+        public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid idsp,Guid idcn, SanPhamChiNhanhEntities spcn);
+        public Task<ActionResult<TrangThai>> XoaThongTin(Guid idsp, Guid idcn);
+    }
+    public class SanPhamChiNhanhRepository : ISanPhamChiNhanhRepository
     {
         private readonly QlbdaTtsContext context;
         private readonly IMapper mapper;
-        public SanPhamChiNhanhRepo(QlbdaTtsContext context, IMapper mapper)
+        public SanPhamChiNhanhRepository(QlbdaTtsContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;

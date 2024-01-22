@@ -9,8 +9,8 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class SanPhamChiNhanhController : ControllerBase
     {
-        private readonly ISanPhamChiNhanhRepo context;
-        public SanPhamChiNhanhController(ISanPhamChiNhanhRepo context)
+        private readonly ISanPhamChiNhanhRepository context;
+        public SanPhamChiNhanhController(ISanPhamChiNhanhRepository context)
         {
             this.context = context;
         }

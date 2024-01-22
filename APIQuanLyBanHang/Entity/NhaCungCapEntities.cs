@@ -10,7 +10,7 @@
 
         public string? Sdt { get; set; }
 
-        public int? DiaChi { get; set; }
+        public string? DiaChi { get; set; }
 
         public decimal? SoTienNhapHang { get; set; }
 

@@ -9,8 +9,8 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class PhieuChiTieuController : ControllerBase
     {
-        private readonly IPhieuChiTieuRepo context;
-        public PhieuChiTieuController(IPhieuChiTieuRepo phieuChiTieuRepo)
+        private readonly IPhieuChiTieuRepository context;
+        public PhieuChiTieuController(IPhieuChiTieuRepository phieuChiTieuRepo)
         {
             this.context = phieuChiTieuRepo;
         }

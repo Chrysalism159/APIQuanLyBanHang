@@ -10,8 +10,8 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class NhanVienController : ControllerBase
     {
-        private readonly INhanVienRepo context;
-        public NhanVienController(INhanVienRepo context)
+        private readonly INhanVienRepository context;
+        public NhanVienController(INhanVienRepository context)
         {
             this.context = context;
         }
@@ -35,7 +35,11 @@ namespace APIQuanLyBanHang.Controllers
         {
             return await context.ThemThongTin(nv);
         }
-
+        [HttpGet("{email}")]
+        public async Task<ActionResult<NhanVienEntities>> TimIDNhanvien(string email)
+        {
+            return await context.TimIDNhanvien(email);
+        }
         [HttpPut("{id}")]
         public async Task<ActionResult<TrangThai>>CapNhatThongTin(Guid id,NhanVienEntities nv)
         {

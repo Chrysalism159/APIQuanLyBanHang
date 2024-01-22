@@ -24,7 +24,7 @@
 
         public string? DiaChi { get; set; }
 
-        public DateTime? NgaySinh { get; set; }
+        public string? NgaySinh { get; set; }
 
         public string? GhiChu { get; set; }
     }

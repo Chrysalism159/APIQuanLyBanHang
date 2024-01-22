@@ -9,8 +9,8 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class ChiTietHoaDonController : ControllerBase
     {
-        private readonly IChiTietHoaDonRepo context;
-        public ChiTietHoaDonController(IChiTietHoaDonRepo context)
+        private readonly IChiTietHoaDonRepository context;
+        public ChiTietHoaDonController(IChiTietHoaDonRepository context)
         {
             this.context = context;
         }
@@ -29,6 +29,11 @@ namespace APIQuanLyBanHang.Controllers
         public async Task<ActionResult<List<ChiTietHoaDonEntities>>>TimTheoIDSanPham(Guid idsp)
         {
             return await context.TimTheoIDSanPham(idsp);
+        }
+        [HttpGet("{idhd}")]
+        public async Task<ActionResult<List<ChiTietHoaDonEntities>>> TimTheoIDHoaDon(Guid idhd)
+        {
+            return await context.TimTheoIDHoaDon(idhd);
         }
         [HttpPost]
         public async Task<ActionResult<TrangThai>>ThemThongTin(ChiTietHoaDonEntities cthd)
