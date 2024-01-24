@@ -2,9 +2,12 @@
 {
     public class LoaiTheEntities
     {
-        public Guid? IdLoaiThe { get; set; }
+        public Guid IdloaiThe { get; set; } 
+
         public string? TenLoaiThe { get; set; }
-        public int HanMuc {  get; set; }
-        public string? GhiChuLoaiThe { get; set; }
+
+        public string? HanMuc { get; set; }
+
+        public string? GhiChu { get; set; }
     }
 }

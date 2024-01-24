@@ -1,5 +1,6 @@
 ﻿using APIQuanLyBanHang.Entity;
 using APIQuanLyBanHang.InterfaceRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,9 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class LoaiTheController : ControllerBase
     {
-        private readonly ILoaiTheRepo _context;
+        private readonly ILoaiTheRepository _context;
 
-        public LoaiTheController(ILoaiTheRepo _context) 
+        public LoaiTheController(ILoaiTheRepository _context) 
         {
             this._context = _context;
         }
@@ -21,6 +22,7 @@ namespace APIQuanLyBanHang.Controllers
             return await _context.DanhSach();
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "QuanLy")]
         public async Task<ActionResult<LoaiTheEntities>> TimTheoID(Guid id)
         {
             return await _context.TimTheoID(id);

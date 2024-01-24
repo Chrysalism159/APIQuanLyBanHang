@@ -25,7 +25,7 @@ public partial class NhanVien
 
     public string? Email { get; set; }
 
-    public string? ĐiaChi { get; set; }
+    public string? DiaChi { get; set; }
 
     public string? TrangThai { get; set; }
 

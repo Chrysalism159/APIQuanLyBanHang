@@ -11,8 +11,6 @@ public partial class PhieuNhapHang
 
     public string? IdnhaCungCap { get; set; }
 
-    public string? Idanh { get; set; }
-
     public string? IdchiNhanh { get; set; }
 
     public string? TenHangNhap { get; set; }
@@ -28,8 +26,6 @@ public partial class PhieuNhapHang
     public string? GhiChu { get; set; }
 
     public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; } = new List<ChiTietHoaDon>();
-
-    public virtual Anh? IdanhNavigation { get; set; }
 
     public virtual ChiNhanh? IdchiNhanhNavigation { get; set; }
 

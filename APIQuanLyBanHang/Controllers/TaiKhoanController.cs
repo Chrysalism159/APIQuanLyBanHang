@@ -1,9 +1,6 @@
-﻿using APIQuanLyBanHang.Data;
-using APIQuanLyBanHang.Entity;
+﻿using APIQuanLyBanHang.Helper;
 using APIQuanLyBanHang.InterfaceRepo;
-using APIQuanLyBanHang.Model;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIQuanLyBanHang.Controllers
@@ -12,32 +9,34 @@ namespace APIQuanLyBanHang.Controllers
     [ApiController]
     public class TaiKhoanController : ControllerBase
     {
-        private readonly ITaiKhoanRepo _repo;
+        private readonly ITaiKhoanRepositories account;
 
-        public TaiKhoanController(ITaiKhoanRepo repo) 
-        {   
-            this._repo = repo;
-        
-        }
-        [HttpPost("Sign in")]
-        public async Task<IActionResult> SignInAsync(Account signin)
+        public TaiKhoanController(ITaiKhoanRepositories acc)
         {
-            var result = await _repo.SignInAsync(signin);
+            this.account = acc;
+        }
+
+        [HttpPost("SignInAsync")]
+        public async Task<IActionResult> SignInAsync(QuanLyTaiKhoanDangNhap model)
+        {
+            var result = await account.SignInAsync(model);
             if (string.IsNullOrEmpty(result))
             {
                 return Unauthorized();
             }
             return Ok(result);
         }
-        [HttpPost("Sign up")]
-        public async Task<IActionResult> SignUpAsync(Account signup)
+
+        [HttpPost("SignUpAsync")]
+        public async Task<IActionResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
         {
-            var result = await _repo.SignUpAsync(signup);
+            var result = await account.SignUpAsync(model);
             if (result.Succeeded)
             {
                 return Ok(result.Succeeded);
             }
             return Unauthorized();
+            
         }
     }
 }

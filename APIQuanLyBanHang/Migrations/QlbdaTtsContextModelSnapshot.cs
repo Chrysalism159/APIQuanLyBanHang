@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace APIQuanLyBanHang.Migrations
+namespace APIQuanLyBanHang.Migrations.QlbdaTts
 {
     [DbContext(typeof(QlbdaTtsContext))]
     partial class QlbdaTtsContextModelSnapshot : ModelSnapshot
@@ -21,6 +21,58 @@ namespace APIQuanLyBanHang.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("APIQuanLyBanHang.Helper.TaiKhoanNguoiDung", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
 
             modelBuilder.Entity("APIQuanLyBanHang.Model.Anh", b =>
                 {
@@ -52,15 +104,15 @@ namespace APIQuanLyBanHang.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("IDChiNhanh");
 
+                    b.Property<string>("DiaChi")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("GhiChu")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TenChiNhanh")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ĐiaChi")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -459,6 +511,26 @@ namespace APIQuanLyBanHang.Migrations
                     b.ToTable("SanPham", (string)null);
                 });
 
+            modelBuilder.Entity("APIQuanLyBanHang.Model.SanPhamChiNhanh", b =>
+                {
+                    b.Property<string>("IdchiNhanh")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("IdsanPham")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdchiNhanh", "IdsanPham");
+
+                    b.HasIndex("IdsanPham");
+
+                    b.ToTable("SanPhamChiNhanhs");
+                });
+
             modelBuilder.Entity("APIQuanLyBanHang.Model.TaiKhoan", b =>
                 {
                     b.Property<string>("IdtaiKhoan")
@@ -471,7 +543,7 @@ namespace APIQuanLyBanHang.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("MatKhau")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -488,74 +560,6 @@ namespace APIQuanLyBanHang.Migrations
                     b.ToTable("TaiKhoan", (string)null);
                 });
 
-            modelBuilder.Entity("APIQuanLyBanHang.Model.TaiKhoanNguoiDung", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("GhiChu")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdtaiKhoan")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhanQuyen")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenNguoiDung")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("APIQuanLyBanHang.Model.TheThanhVien", b =>
                 {
                     b.Property<string>("IdtheThanhVien")
@@ -563,6 +567,10 @@ namespace APIQuanLyBanHang.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("IDTheThanhVien");
+
+                    b.Property<string>("DiaChi")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(50)
@@ -603,10 +611,6 @@ namespace APIQuanLyBanHang.Migrations
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("TenKhachHang")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ĐiaChi")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -855,6 +859,25 @@ namespace APIQuanLyBanHang.Migrations
                     b.Navigation("IdanhNavigation");
                 });
 
+            modelBuilder.Entity("APIQuanLyBanHang.Model.SanPhamChiNhanh", b =>
+                {
+                    b.HasOne("APIQuanLyBanHang.Model.ChiNhanh", "IdchiNhanhNavigation")
+                        .WithMany("SanPhamChiNhanhs")
+                        .HasForeignKey("IdchiNhanh")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIQuanLyBanHang.Model.SanPham", "IdsanPhamNavigation")
+                        .WithMany("SanPhamChiNhanhs")
+                        .HasForeignKey("IdsanPham")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdchiNhanhNavigation");
+
+                    b.Navigation("IdsanPhamNavigation");
+                });
+
             modelBuilder.Entity("APIQuanLyBanHang.Model.TheThanhVien", b =>
                 {
                     b.HasOne("APIQuanLyBanHang.Model.LoaiThe", "IdloaiTheNavigation")
@@ -881,6 +904,8 @@ namespace APIQuanLyBanHang.Migrations
                     b.Navigation("PhieuChiTieus");
 
                     b.Navigation("PhieuNhapHangs");
+
+                    b.Navigation("SanPhamChiNhanhs");
                 });
 
             modelBuilder.Entity("APIQuanLyBanHang.Model.HoaDon", b =>
@@ -915,6 +940,8 @@ namespace APIQuanLyBanHang.Migrations
             modelBuilder.Entity("APIQuanLyBanHang.Model.SanPham", b =>
                 {
                     b.Navigation("ChiTietHoaDons");
+
+                    b.Navigation("SanPhamChiNhanhs");
                 });
 
             modelBuilder.Entity("APIQuanLyBanHang.Model.TaiKhoan", b =>

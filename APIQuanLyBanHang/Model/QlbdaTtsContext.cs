@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using APIQuanLyBanHang.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIQuanLyBanHang.Model;
 
-public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
+public partial class QlbdaTtsContext : IdentityScaffordContext
 {
-    public QlbdaTtsContext()
-    {
-    }
-
     public QlbdaTtsContext(DbContextOptions<QlbdaTtsContext> options)
         : base(options)
     {
     }
 
     public virtual DbSet<Anh> Anhs { get; set; }
+
+    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+
+    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+
+    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+
+    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+
+    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+
+    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
 
     public virtual DbSet<ChiNhanh> ChiNhanhs { get; set; }
 
@@ -36,6 +44,8 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
     public virtual DbSet<PhieuNhapHang> PhieuNhapHangs { get; set; }
 
     public virtual DbSet<SanPham> SanPhams { get; set; }
+
+    public virtual DbSet<SanPhamChiNhanh> SanPhamChiNhanhs { get; set; }
 
     public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
 
@@ -75,6 +85,72 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
             entity.Property(e => e.GhiChu).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<AspNetRole>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedName] IS NOT NULL)");
+
+            entity.Property(e => e.Name).HasMaxLength(256);
+            entity.Property(e => e.NormalizedName).HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        {
+            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
+        });
+
+        modelBuilder.Entity<AspNetUser>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+            entity.Property(e => e.UserName).HasMaxLength(256);
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "AspNetUserRole",
+                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
+                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+                    j =>
+                    {
+                        j.HasKey("UserId", "RoleId");
+                        j.ToTable("AspNetUserRoles");
+                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+                    });
+        });
+
+        modelBuilder.Entity<AspNetUserClaim>(entity =>
+        {
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserLogin>(entity =>
+        {
+            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserToken>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
+        });
+
         modelBuilder.Entity<ChiNhanh>(entity =>
         {
             entity.HasKey(e => e.IdchiNhanh);
@@ -85,9 +161,10 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IDChiNhanh");
+            entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.GhiChu).HasMaxLength(50);
+            entity.Property(e => e.SoDienThoai).HasMaxLength(50);
             entity.Property(e => e.TenChiNhanh).HasMaxLength(50);
-            entity.Property(e => e.ĐiaChi).HasMaxLength(50);
         });
 
         modelBuilder.Entity<ChiTietHoaDon>(entity =>
@@ -220,6 +297,7 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CCCD");
+            entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -240,7 +318,6 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasColumnName("SDT");
             entity.Property(e => e.TenNhanVien).HasMaxLength(50);
             entity.Property(e => e.TrangThai).HasMaxLength(50);
-            entity.Property(e => e.ĐiaChi).HasMaxLength(50);
 
             entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.NhanViens)
                 .HasForeignKey(d => d.IdchiNhanh)
@@ -297,10 +374,6 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasColumnName("IDPhieuNhapHang");
             entity.Property(e => e.ChietKhau).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.GhiChu).HasMaxLength(50);
-            entity.Property(e => e.Idanh)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDAnh");
             entity.Property(e => e.IdchiNhanh)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -317,10 +390,6 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
             entity.Property(e => e.ThoiGianLapHoaDon).HasColumnType("datetime");
             entity.Property(e => e.TongTienSauChietKhau).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TongTienThanhToan).HasColumnType("decimal(18, 0)");
-
-            entity.HasOne(d => d.IdanhNavigation).WithMany(p => p.PhieuNhapHangs)
-                .HasForeignKey(d => d.Idanh)
-                .HasConstraintName("FK_PhieuNhapHang_Anh");
 
             entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.PhieuNhapHangs)
                 .HasForeignKey(d => d.IdchiNhanh)
@@ -361,6 +430,24 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasConstraintName("FK_SanPham_Anh");
         });
 
+        modelBuilder.Entity<SanPhamChiNhanh>(entity =>
+        {
+            entity.HasKey(e => new { e.IdchiNhanh, e.IdsanPham });
+
+            entity.HasIndex(e => e.IdsanPham, "IX_SanPhamChiNhanhs_IdsanPham");
+
+            entity.Property(e => e.IdchiNhanh)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.IdsanPham)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdchiNhanhNavigation).WithMany(p => p.SanPhamChiNhanhs).HasForeignKey(d => d.IdchiNhanh);
+
+            entity.HasOne(d => d.IdsanPhamNavigation).WithMany(p => p.SanPhamChiNhanhs).HasForeignKey(d => d.IdsanPham);
+        });
+
         modelBuilder.Entity<TaiKhoan>(entity =>
         {
             entity.HasKey(e => e.IdtaiKhoan);
@@ -372,7 +459,7 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .IsUnicode(false)
                 .HasColumnName("IDTaiKhoan");
             entity.Property(e => e.GhiChu).HasMaxLength(50);
-            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.MatKhau).HasMaxLength(50);
             entity.Property(e => e.PhanQuyen).HasMaxLength(50);
             entity.Property(e => e.TenNguoiDung).HasMaxLength(50);
         });
@@ -387,6 +474,7 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IDTheThanhVien");
+            entity.Property(e => e.DiaChi).HasMaxLength(50);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.GhiChu).HasMaxLength(50);
             entity.Property(e => e.IdloaiThe)
@@ -401,7 +489,6 @@ public partial class QlbdaTtsContext : IdentityDbContext<TaiKhoanNguoiDung>
             entity.Property(e => e.SoTienDaSuDung).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.SoTienDaTichLuy).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TenKhachHang).HasMaxLength(50);
-            entity.Property(e => e.ĐiaChi).HasMaxLength(50);
 
             entity.HasOne(d => d.IdloaiTheNavigation).WithMany(p => p.TheThanhViens)
                 .HasForeignKey(d => d.IdloaiThe)

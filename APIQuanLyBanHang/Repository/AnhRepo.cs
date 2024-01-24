@@ -51,9 +51,14 @@ namespace APIQuanLyBanHang.Repository
         }
 
         public async Task<ActionResult<List<AnhEntities>>> DanhSach()
+<<<<<<< Updated upstream
         {
             List<Anh> ds = await _context.Anhs.ToListAsync();
             if (ds != null && ds.Count > 0)
+=======
+         {
+            try
+>>>>>>> Stashed changes
             {
                 return this._map.Map<List<Anh>, List<AnhEntities>>(ds);
             }
