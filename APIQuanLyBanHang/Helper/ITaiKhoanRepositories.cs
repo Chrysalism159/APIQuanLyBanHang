@@ -1,4 +1,5 @@
-﻿using APIQuanLyBanHang.InterfaceRepo;
+﻿using APIQuanLyBanHang.Entity;
+using APIQuanLyBanHang.InterfaceRepo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +11,7 @@ namespace APIQuanLyBanHang.Helper
     public interface ITaiKhoanRepositories
     {
         public Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan tt);
-        public Task<string> SignInAsync(QuanLyTaiKhoanDangNhap tt);
+        public Task<TrangThai> SignInAsync(QuanLyTaiKhoanDangNhap tt);
     }
     public class TaiKhoanRepositories : ITaiKhoanRepositories
     {
@@ -30,14 +31,14 @@ namespace APIQuanLyBanHang.Helper
 
         }
 
-        public async Task<string> SignInAsync(QuanLyTaiKhoanDangNhap model)
+        public async Task<TrangThai> SignInAsync(QuanLyTaiKhoanDangNhap model)
         {
             var user = await userManager.FindByEmailAsync(model.TaiKhoanEmail);
             var passwordValid = await userManager.CheckPasswordAsync(user, model.MatKhau);
 
             if (user == null || !passwordValid)
             {
-                return string.Empty;
+                return new TrangThai { MaTrangThai= 0, ThongBao="Login failed!"};
             }
 
             var authClaims = new List<Claim>
@@ -59,10 +60,10 @@ namespace APIQuanLyBanHang.Helper
                 audience: configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddMinutes(20),
                 claims: authClaims,
-                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
+                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256)
             );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            return new TrangThai { MaTrangThai = 1, ThongBao=tokenString };
         }
 
         public async Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
@@ -83,8 +84,17 @@ namespace APIQuanLyBanHang.Helper
                 {
                     await roleManager.CreateAsync(new IdentityRole(QuyenTruyCap.QuanLy));
                 }
+                if (!await roleManager.RoleExistsAsync(QuyenTruyCap.NhanVien))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(QuyenTruyCap.NhanVien));
+                }
 
-                await userManager.AddToRoleAsync(user, QuyenTruyCap.QuanLy);
+                if(model.PhanQuyen.Equals(QuyenTruyCap.NhanVien))
+                {
+                    await userManager.AddToRoleAsync(user, QuyenTruyCap.NhanVien);
+                }
+                else
+                    await userManager.AddToRoleAsync(user, QuyenTruyCap.QuanLy);
             }
             return result;
         }

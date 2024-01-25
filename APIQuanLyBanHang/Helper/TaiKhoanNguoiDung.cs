@@ -7,5 +7,6 @@ namespace APIQuanLyBanHang.Helper
         //public string? TenNguoiDung { get; set; }
         //public string? TaiKhoanEmail { get; set; }
         //public string? MatKhau { get; set; }
+        //public string? PhanQuyen { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using APIQuanLyBanHang.Entity;
+using APIQuanLyBanHang.Helper;
 using APIQuanLyBanHang.InterfaceRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +18,7 @@ namespace APIQuanLyBanHang.Controllers
             this._repo = repo;
         }
         [HttpGet]
+        [Authorize(Roles = QuyenTruyCap.QuanLy)]
         public async Task<ActionResult<List<SanPhamEntities>>> DanhSach()
         {
             return await _repo.DanhSach();

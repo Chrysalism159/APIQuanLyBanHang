@@ -8,6 +8,7 @@ namespace APIQuanLyBanHang.Model;
 
 public partial class QlbdaTtsContext : IdentityScaffordContext
 {
+
     public QlbdaTtsContext(DbContextOptions<QlbdaTtsContext> options)
         : base(options)
     {
@@ -184,10 +185,6 @@ public partial class QlbdaTtsContext : IdentityScaffordContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IDHoaDon");
-            entity.Property(e => e.IdphieuNhapHang)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("IDPhieuNhapHang");
             entity.Property(e => e.IdsanPham)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -197,10 +194,6 @@ public partial class QlbdaTtsContext : IdentityScaffordContext
             entity.HasOne(d => d.IdhoaDonNavigation).WithMany(p => p.ChiTietHoaDons)
                 .HasForeignKey(d => d.IdhoaDon)
                 .HasConstraintName("FK_ChiTietHoaDon_HoaDon");
-
-            entity.HasOne(d => d.IdphieuNhapHangNavigation).WithMany(p => p.ChiTietHoaDons)
-                .HasForeignKey(d => d.IdphieuNhapHang)
-                .HasConstraintName("FK_ChiTietHoaDon_PhieuNhapHang");
 
             entity.HasOne(d => d.IdsanPhamNavigation).WithMany(p => p.ChiTietHoaDons)
                 .HasForeignKey(d => d.IdsanPham)
