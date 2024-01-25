@@ -37,7 +37,6 @@ namespace APIQuanLyBanHang.InterfaceRepo
                         hd.ThanhTien = cthd.ThanhTien;
                         hd.IdhoaDon = cthd.IdhoaDon.ToString();
                         hd.IdsanPham = cthd.IdsanPham.ToString();
-                        hd.IdphieuNhapHang = cthd.IdphieuNhapHang.ToString();
                         hd.ChietKhau = cthd.ChietKhau;
                         hd.SoLuong = cthd.SoLuong;
                         hd.Dongia = cthd.Dongia;
@@ -96,7 +95,6 @@ namespace APIQuanLyBanHang.InterfaceRepo
                             IdchiTietHoaDon = cthd.IdchiTietHoaDon.ToString(),
                             IdhoaDon = cthd.IdhoaDon.ToString(),
                             IdsanPham = cthd.IdsanPham.ToString(),
-                            IdphieuNhapHang = cthd.IdphieuNhapHang.ToString(),
                             ChietKhau = cthd.ChietKhau,
                             SoLuong = cthd.SoLuong,
                             Dongia = cthd.Dongia,
