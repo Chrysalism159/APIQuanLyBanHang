@@ -1,12 +1,11 @@
-﻿using APIQuanLyBanHang.Entity;
-using APIQuanLyBanHang.Helper;
+﻿using APIQuanLyBanHang.Helper;
 using APIQuanLyBanHang.InterfaceRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]/{action}")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TaiKhoanController : ControllerBase
     {
@@ -17,15 +16,19 @@ namespace APIQuanLyBanHang.Controllers
             this.account = acc;
         }
 
-        [HttpPost("DangNhap")]
-        public async Task<TrangThai> DangNhap(QuanLyTaiKhoanDangNhap model)
+        [HttpPost("SignInAsync")]
+        public async Task<IActionResult> SignInAsync(QuanLyTaiKhoanDangNhap model)
         {
-            TrangThai result = await account.SignInAsync(model);
-            return result;
+            var result = await account.SignInAsync(model);
+            if (string.IsNullOrEmpty(result))
+            {
+                return Unauthorized();
+            }
+            return Ok(result);
         }
 
-        [HttpPost("DangKi")]
-        public async Task<IActionResult> DangKi(QuanLyThongTinTaiKhoan model)
+        [HttpPost("SignUpAsync")]
+        public async Task<IActionResult> SignUpAsync(QuanLyThongTinTaiKhoan model)
         {
             var result = await account.SignUpAsync(model);
             if (result.Succeeded)
