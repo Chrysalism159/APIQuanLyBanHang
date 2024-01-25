@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]/{action}")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class SanPhamController : ControllerBase
     {
