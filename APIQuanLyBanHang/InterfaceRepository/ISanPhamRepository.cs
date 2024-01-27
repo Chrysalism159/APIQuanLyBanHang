@@ -71,7 +71,6 @@ namespace APIQuanLyBanHang.InterfaceRepo
 
         public async Task<ActionResult<TrangThai>> ThemThongTin(SanPhamEntities kh)
         {
-            kh.IdsanPham = Guid.NewGuid();
             try
             {
                 using (var dbtran = await this._context.Database.BeginTransactionAsync())

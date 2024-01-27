@@ -18,7 +18,8 @@ namespace APIQuanLyBanHang.Controllers
             this._repo = repo;
         }
         [HttpGet]
-        [Authorize(Roles = QuyenTruyCap.QuanLy)]
+        //[Authorize(Roles = QuyenTruyCap.QuanLy)]
+        [Authorize]
         public async Task<ActionResult<List<SanPhamEntities>>> DanhSach()
         {
             return await _repo.DanhSach();

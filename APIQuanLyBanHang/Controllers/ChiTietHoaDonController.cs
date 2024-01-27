@@ -40,12 +40,12 @@ namespace APIQuanLyBanHang.Controllers
         {
             return await context.ThemThongTin(cthd);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<TrangThai>>CapNhatThongTin(Guid id,ChiTietHoaDonEntities ctdh)
         {
             return await context.CapNhatThongTin(id, ctdh);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<TrangThai>>XoaThongTin(Guid id)
         {
             return await context.XoaThongTin(id);

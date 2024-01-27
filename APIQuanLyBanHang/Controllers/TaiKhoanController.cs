@@ -23,7 +23,11 @@ namespace APIQuanLyBanHang.Controllers
             TrangThai result = await account.SignInAsync(model);
             return result;
         }
-
+        [HttpPost("DangXuat")]
+        public async Task<TrangThai> DangXuat(QuanLyTaiKhoanDangNhap tt)
+        {
+            return await account.SignOutAsync(tt);
+        }
         [HttpPost("DangKi")]
         public async Task<IActionResult> DangKi(QuanLyThongTinTaiKhoan model)
         {

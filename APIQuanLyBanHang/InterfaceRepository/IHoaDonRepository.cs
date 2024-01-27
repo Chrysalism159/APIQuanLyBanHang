@@ -39,6 +39,8 @@ namespace APIQuanLyBanHang.InterfaceRepo
                         tt.IdchiNhanh = kh.IdchiNhanh.ToString();
                         tt.IdnhanVien = kh.IdnhanVien.ToString();
                         tt.IdtheThanhVien = kh.IdtheThanhVien.ToString();
+                        tt.SoTienKhachTra = kh.SoTienKhachTra;
+                        tt.TongTienSauChietKhau = kh.TongTienSauChietKhau;
                         tt.NgayLapHoaDon = DateTime.ParseExact(kh.NgayLapHoaDon, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
                     }
@@ -75,6 +77,8 @@ namespace APIQuanLyBanHang.InterfaceRepo
                         IdchiNhanh = kh.IdchiNhanh.ToString(),
                         IdnhanVien = kh.IdnhanVien.ToString(),
                         IdtheThanhVien = kh.IdtheThanhVien.ToString(),
+                        SoTienKhachTra = kh.SoTienKhachTra,
+                        TongTienSauChietKhau = kh.TongTienSauChietKhau,
                         NgayLapHoaDon = DateTime.ParseExact(kh.NgayLapHoaDon, "yyyy-MM-dd", CultureInfo.InvariantCulture),
 
                     };

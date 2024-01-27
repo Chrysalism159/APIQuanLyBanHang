@@ -12,6 +12,7 @@ namespace APIQuanLyBanHang.Helper
     {
         public Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan tt);
         public Task<TrangThai> SignInAsync(QuanLyTaiKhoanDangNhap tt);
+        public Task<TrangThai> SignOutAsync(QuanLyTaiKhoanDangNhap tt);
     }
     public class TaiKhoanRepositories : ITaiKhoanRepositories
     {
@@ -58,12 +59,35 @@ namespace APIQuanLyBanHang.Helper
             var token = new JwtSecurityToken(
                 issuer: configuration["JWT:ValidIssuer"],
                 audience: configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(20),
+                expires: DateTime.Now.AddMinutes(5),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256)
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
             return new TrangThai { MaTrangThai = 1, ThongBao=tokenString };
+        }
+
+        public async Task<TrangThai> SignOutAsync(QuanLyTaiKhoanDangNhap tt)
+        {
+            var user = await userManager.FindByEmailAsync(tt.TaiKhoanEmail);
+
+            // Chưa xác thực hoặc không có người dùng, không thể hủy token
+            if (user==null)
+            {
+                return new TrangThai { MaTrangThai = 0, ThongBao = "Không tìm được thông tin tài khoản!" };
+            }
+
+            else
+            {
+                // Đăng xuất người dùng
+                await signInManager.SignOutAsync();
+
+                // Nếu cần, bạn cũng có thể thêm các bước khác như đặt trạng thái hủy token cho người dùng tại đây.
+
+                return new TrangThai { MaTrangThai = 1, ThongBao = "Đăng xuất thành công!" };
+            }
+
+            return new TrangThai { MaTrangThai = 0, ThongBao = "Token vô hiệu!" };
         }
 
         public async Task<IdentityResult> SignUpAsync(QuanLyThongTinTaiKhoan model)

@@ -55,6 +55,11 @@ namespace APIQuanLyBanHang.Controllers
         {
             return await _context.CapNhatThongTin(id, kh);
         }
+        [HttpPatch("{id}")]
+        public async Task<TrangThai> CapNhatDiem(Guid id, [FromBody] TheThanhVienEntities kh)
+        {
+            return await _context.CapNhatDiem(id, kh);
+        }
         [HttpDelete("{id}")]    
         public async Task<ActionResult<TrangThai>> XoaThongTin(Guid id)
         {

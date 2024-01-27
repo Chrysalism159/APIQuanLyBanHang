@@ -16,6 +16,7 @@ namespace APIQuanLyBanHang.InterfaceRepo
         public Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheThanhVienEntities kh);
         public Task<ActionResult<TheThanhVienEntities>> LayMaKhachHang(string name, string sdt);
         public Task<ActionResult<TrangThai>> XoaThongTin(Guid id);
+        public Task<TrangThai> CapNhatDiem(Guid id, [FromBody] TheThanhVienEntities kh);
     }
     public class TheKhachHangRepository : ITheKhachHangRepository
     {
@@ -27,7 +28,31 @@ namespace APIQuanLyBanHang.InterfaceRepo
             this._context = _context;
             this._map = map;
         }
-
+        public async Task<TrangThai> CapNhatDiem(Guid id, [FromBody] TheThanhVienEntities kh)
+        {
+            try
+            {
+                using (var dbtran = await this._context.Database.BeginTransactionAsync())
+                {
+                    TheThanhVien tt = await _context.FindAsync<TheThanhVien>(id.ToString());
+                    if (tt != null)
+                    {
+                        tt.SoDiemTichLuy = kh.SoDiemTichLuy;
+                        tt.SoDiemDaSuDung = kh.SoDiemDaSuDung;
+                        tt.SoTienDaTichLuy = kh.SoTienDaTichLuy;
+                        tt.SoTienDaSuDung = kh.SoTienDaSuDung;
+                        tt.GhiChu = kh.GhiChu;
+                    }
+                    await _context.SaveChangesAsync();
+                    await dbtran.CommitAsync();
+                    return new TrangThai() { MaTrangThai = 1, ThongBao = "Sua thanh cong" };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new TrangThai() { MaTrangThai = 0, ThongBao = "Sua that bai" };
+            }
+        }
         public async Task<ActionResult<TrangThai>> CapNhatThongTin(Guid id, TheThanhVienEntities kh)
         {
             try
