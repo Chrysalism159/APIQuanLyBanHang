@@ -11,7 +11,7 @@ using APIQuanLyBanHang.Entity;
 
 namespace APIQuanLyBanHang.Controllers
 {
-    [Route("api/[controller]/{action}")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class ChiNhanhController : ControllerBase
     {

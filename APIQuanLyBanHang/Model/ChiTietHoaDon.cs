@@ -11,6 +11,8 @@ public partial class ChiTietHoaDon
 
     public string? IdsanPham { get; set; }
 
+    public string? IdphieuNhapHang { get; set; }
+
     public decimal? ChietKhau { get; set; }
 
     public int? SoLuong { get; set; }
@@ -22,6 +24,8 @@ public partial class ChiTietHoaDon
     public string? GhiChu { get; set; }
 
     public virtual HoaDon? IdhoaDonNavigation { get; set; }
+
+    public virtual PhieuNhapHang? IdphieuNhapHangNavigation { get; set; }
 
     public virtual SanPham? IdsanPhamNavigation { get; set; }
 }

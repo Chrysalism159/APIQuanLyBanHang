@@ -7,6 +7,11 @@
         public Guid? IdhoaDon { get; set; }
 
         public Guid? IdsanPham { get; set; }
+
+        public Guid? IdphieuNhapHang { get; set; }
+
+       
+
         public decimal? ChietKhau { get; set; }
 
         public int? SoLuong { get; set; }
